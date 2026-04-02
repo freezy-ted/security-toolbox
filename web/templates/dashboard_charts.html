@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Security Toolbox</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0f1117;color:#e0e0e0;min-height:100vh}
+header{background:#111827;border-bottom:1px solid #1f2937;padding:1rem 2rem;display:flex;align-items:center;gap:12px}
+header h1{font-size:1.1rem;font-weight:500;color:#fff;flex:1}
+.badge{font-size:11px;padding:3px 10px;border-radius:99px;background:#0f6e5620;color:#5DCAA5;border:1px solid #0f6e5640}
+.layout{display:flex;min-height:calc(100vh - 57px)}
+.sidebar{width:210px;min-width:210px;background:#111827;border-right:1px solid #1f2937;padding:1rem 0;display:flex;flex-direction:column}
+.sidebar-section{font-size:10px;font-weight:500;color:#4b5563;text-transform:uppercase;letter-spacing:.08em;padding:1rem 1.25rem .4rem}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 1.25rem;font-size:13px;color:#9ca3af;cursor:pointer;border-left:2px solid transparent;transition:all .15s}
+.nav-item:hover{color:#e0e0e0;background:#1f2937}
+.nav-item.active{color:#5DCAA5;border-left-color:#5DCAA5;background:#0f6e5610}
+.sidebar-footer{margin-top:auto;padding:1rem 1.25rem;font-size:11px;color:#4b5563}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:.9rem 1.5rem;border-bottom:1px solid #1f2937;display:flex;align-items:center;gap:10px}
+.topbar-title{font-size:14px;font-weight:500;color:#e0e0e0;flex:1}
+.topbar-status{font-size:11px;padding:3px 10px;border-radius:99px;background:#0f6e5620;color:#5DCAA5}
+.page{flex:1;overflow-y:auto;padding:1.5rem;display:none}
+.page.active{display:block}
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.5rem}
+.stat{background:#111827;border:1px solid #1f2937;border-radius:10px;padding:1rem;text-align:center}
+.stat-v{font-size:1.6rem;font-weight:500}
+.stat-l{font-size:11px;color:#6b7280;margin-top:2px}
+.stat.c-green .stat-v{color:#5DCAA5}
+.stat.c-blue  .stat-v{color:#85B7EB}
+.stat.c-amber .stat-v{color:#EF9F27}
+.stat.c-red   .stat-v{color:#E24B4A}
+.stat.c-purple.stat-v{color:#AFA9EC}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem}
+.charts-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1.5rem}
+.chart-card{background:#111827;border:1px solid #1f2937;border-radius:10px;padding:1.25rem}
+.chart-card.full{grid-column:1/-1}
+.chart-title{font-size:12px;font-weight:500;color:#9ca3af;margin-bottom:1rem;text-transform:uppercase;letter-spacing:.05em}
+.card{background:#111827;border:1px solid #1f2937;border-radius:10px;padding:1.25rem;margin-bottom:1rem}
+.card h2{font-size:.9rem;font-weight:500;color:#e0e0e0;margin-bottom:1rem;padding-bottom:8px;border-bottom:1px solid #1f2937}
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:1.5rem}
+.mod-card{background:#111827;border:1px solid #1f2937;border-radius:10px;padding:1rem;cursor:pointer;transition:border-color .15s}
+.mod-card:hover{border-color:#374151}
+.mod-card.running{border-color:#EF9F27}
+.mod-card.done{border-color:#1D9E75}
+.mod-card.error{border-color:#E24B4A}
+.mod-name{font-size:13px;font-weight:500;color:#e0e0e0;margin-bottom:4px}
+.mod-desc{font-size:11px;color:#6b7280;line-height:1.5;margin-bottom:8px}
+.mod-status{font-size:10px;padding:2px 8px;border-radius:99px;display:inline-block}
+.s-idle{background:#1f2937;color:#6b7280}
+.s-running{background:#854f0b30;color:#EF9F27;border:1px solid #EF9F2740}
+.s-done{background:#0f6e5620;color:#5DCAA5;border:1px solid #5DCAA540}
+.s-error{background:#a32d2d20;color:#E24B4A;border:1px solid #E24B4A40}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:#9ca3af;margin-bottom:5px}
+.field input{width:100%;padding:8px 10px;font-size:13px;background:#1f2937;border:1px solid #374151;border-radius:6px;color:#e0e0e0;outline:none}
+.field input:focus{border-color:#5DCAA5}
+.field input::placeholder{color:#4b5563}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{padding:9px 20px;font-size:13px;font-weight:500;border:none;border-radius:6px;cursor:pointer;transition:opacity .15s;margin-top:4px}
+.btn-primary{background:#1D9E75;color:white}
+.btn-primary:hover{opacity:.85}
+.btn-primary:disabled{opacity:.35;cursor:not-allowed}
+.btn-sm{padding:5px 12px;font-size:12px;background:#1f2937;color:#9ca3af;border:1px solid #374151;border-radius:6px;cursor:pointer}
+.btn-sm:hover{color:#e0e0e0}
+.terminal{background:#0a0a0a;border:1px solid #1f2937;border-radius:8px;padding:1rem;font-family:monospace;font-size:12px;line-height:1.7;min-height:140px;max-height:300px;overflow-y:auto;color:#d4d4d4;margin-top:12px}
+.t-green{color:#5DCAA5}.t-amber{color:#EF9F27}.t-red{color:#E24B4A}.t-gray{color:#555}
+.progress-bar{height:3px;background:#1f2937;border-radius:99px;margin-top:10px;overflow:hidden}
+.progress-fill{height:100%;background:#1D9E75;border-radius:99px;transition:width .4s;width:0%}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px;font-size:12px;color:#9ca3af}
+.legend-item{display:flex;align-items:center;gap:5px}
+.legend-dot{width:10px;height:10px;border-radius:2px}
+.cmds-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.cmd-box{background:#1f2937;border-radius:6px;padding:10px;font-size:12px}
+.cmd-code{color:#9ca3af;font-family:monospace;margin-top:2px}
+.report-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1f2937}
+.report-item:last-child{border-bottom:none}
+.report-meta{font-size:11px;color:#6b7280;margin-top:2px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚙ Security Toolbox</h1>
+  <span class="badge" id="global-status">Prêt</span>
+</header>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-section">Navigation</div>
+    <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)">▦ &nbsp;Dashboard</div>
+    <div class="nav-item" data-page="recon"   onclick="showPage('recon',this)">◎ &nbsp;Reconnaissance</div>
+    <div class="nav-item" data-page="web"     onclick="showPage('web',this)">⊕ &nbsp;Audit Web</div>
+    <div class="nav-item" data-page="network" onclick="showPage('network',this)">⊶ &nbsp;Réseau passif</div>
+    <div class="nav-item" data-page="ad"      onclick="showPage('ad',this)">⊞ &nbsp;Active Directory</div>
+    <div class="nav-item" data-page="vuln"    onclick="showPage('vuln',this)">⚑ &nbsp;Vulnérabilités</div>
+    <div class="sidebar-section">Résultats</div>
+    <div class="nav-item" data-page="reports" onclick="showPage('reports',this)">☰ &nbsp;Rapports</div>
+    <div class="sidebar-footer">Usage autorisé uniquement</div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <span class="topbar-title" id="page-title">Dashboard</span>
+      <span class="topbar-status" id="topbar-status">Prêt</span>
+    </div>
+
+    <!-- ══════════════════════════════════ DASHBOARD -->
+    <div id="page-dashboard" class="page active">
+      <div class="stats-row">
+        <div class="stat c-green"><div class="stat-v" id="s-total">0</div><div class="stat-l">Scans lancés</div></div>
+        <div class="stat c-blue" ><div class="stat-v" id="s-done">0</div><div class="stat-l">Terminés</div></div>
+        <div class="stat c-amber"><div class="stat-v" id="s-running">0</div><div class="stat-l">En cours</div></div>
+        <div class="stat c-red"  ><div class="stat-v" id="s-vulns">0</div><div class="stat-l">Vulnérabilités</div></div>
+        <div class="stat"        ><div class="stat-v" id="s-ports" style="color:#AFA9EC">0</div><div class="stat-l">Ports ouverts</div></div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-title">Activité des modules</div>
+          <div class="legend" id="legend-activity">
+            <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>Terminés</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>En cours</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#E24B4A"></span>Erreurs</span>
+          </div>
+          <div style="position:relative;height:200px"><canvas id="chart-activity"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Vulnérabilités par sévérité</div>
+          <div class="legend" id="legend-vuln">
+            <span class="legend-item"><span class="legend-dot" style="background:#E24B4A"></span>Critique</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>Élevé</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#AFA9EC"></span>Moyen</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#85B7EB"></span>Faible</span>
+          </div>
+          <div style="position:relative;height:200px"><canvas id="chart-severity"></canvas></div>
+        </div>
+      </div>
+
+      <div class="charts-row-3">
+        <div class="chart-card">
+          <div class="chart-title">Ports ouverts par module</div>
+          <div style="position:relative;height:160px"><canvas id="chart-ports"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Progression des scans</div>
+          <div style="position:relative;height:160px"><canvas id="chart-progress"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Niveau de risque global</div>
+          <div style="position:relative;height:160px"><canvas id="chart-risk"></canvas></div>
+        </div>
+      </div>
+
+      <div class="modules-grid">
+        <div class="mod-card" id="mc-recon"   onclick="showPage('recon',null)"><div class="mod-name">◎ Reconnaissance</div><div class="mod-desc">Nmap · Whois · Subfinder</div><span class="mod-status s-idle" id="ms-recon">En attente</span></div>
+        <div class="mod-card" id="mc-web"     onclick="showPage('web',null)"><div class="mod-name">⊕ Audit Web</div><div class="mod-desc">Nikto · Gobuster · FFUF</div><span class="mod-status s-idle" id="ms-web">En attente</span></div>
+        <div class="mod-card" id="mc-network" onclick="showPage('network',null)"><div class="mod-name">⊶ Réseau</div><div class="mod-desc">tcpdump · tshark</div><span class="mod-status s-idle" id="ms-network">En attente</span></div>
+        <div class="mod-card" id="mc-ad"      onclick="showPage('ad',null)"><div class="mod-name">⊞ Active Directory</div><div class="mod-desc">BloodHound · ldapdomaindump</div><span class="mod-status s-idle" id="ms-ad">En attente</span></div>
+        <div class="mod-card" id="mc-vuln"    onclick="showPage('vuln',null)"><div class="mod-name">⚑ Vulnérabilités</div><div class="mod-desc">Nuclei · Nmap NSE</div><span class="mod-status s-idle" id="ms-vuln">En attente</span></div>
+      </div>
+
+      <div class="card">
+        <h2>Terminal global</h2>
+        <div class="terminal" id="t-dashboard"><span class="t-gray"># Security Toolbox — Sélectionnez un module pour commencer</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════ RECON -->
+    <div id="page-recon" class="page">
+      <div class="card">
+        <h2>◎ Reconnaissance</h2>
+        <div class="field"><label>Cible (IP ou domaine)</label><input type="text" id="recon-target" placeholder="ex: example.com"/></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-primary" id="btn-recon" onclick="launchModule('recon')">▶ Lancer</button><button class="btn btn-sm" onclick="clearTerm('t-recon')">Vider</button></div>
+        <div class="progress-bar"><div class="progress-fill" id="prog-recon"></div></div>
+      </div>
+      <div class="card"><h2>Commandes</h2><div class="cmds-grid">
+        <div class="cmd-box"><div style="color:#5DCAA5">Whois</div><div class="cmd-code">whois $TARGET</div></div>
+        <div class="cmd-box"><div style="color:#5DCAA5">Subfinder</div><div class="cmd-code">subfinder -d $TARGET</div></div>
+        <div class="cmd-box"><div style="color:#5DCAA5">theHarvester</div><div class="cmd-code">theHarvester -d $TARGET -b all</div></div>
+        <div class="cmd-box"><div style="color:#5DCAA5">DNSrecon</div><div class="cmd-code">dnsrecon -d $TARGET -t std</div></div>
+        <div class="cmd-box"><div style="color:#5DCAA5">Nmap rapide</div><div class="cmd-code">nmap -sV -sC --open $TARGET</div></div>
+        <div class="cmd-box"><div style="color:#5DCAA5">Nmap complet</div><div class="cmd-code">nmap -sV -p- --open $TARGET</div></div>
+      </div></div>
+      <div class="terminal" id="t-recon"><span class="t-gray"># En attente...</span></div>
+    </div>
+
+    <!-- ══════════════════════════════════ WEB -->
+    <div id="page-web" class="page">
+      <div class="card">
+        <h2>⊕ Audit Web</h2>
+        <div class="field"><label>URL ou IP cible</label><input type="text" id="web-target" placeholder="ex: http://example.com"/></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-primary" id="btn-web" onclick="launchModule('web')">▶ Lancer</button><button class="btn btn-sm" onclick="clearTerm('t-web')">Vider</button></div>
+        <div class="progress-bar"><div class="progress-fill" id="prog-web"></div></div>
+      </div>
+      <div class="card"><h2>Commandes</h2><div class="cmds-grid">
+        <div class="cmd-box"><div style="color:#85B7EB">Nikto</div><div class="cmd-code">nikto -h $TARGET</div></div>
+        <div class="cmd-box"><div style="color:#85B7EB">Gobuster</div><div class="cmd-code">gobuster dir -u $TARGET -w common.txt</div></div>
+        <div class="cmd-box"><div style="color:#85B7EB">FFUF</div><div class="cmd-code">ffuf -u $TARGET/FUZZ -w common.txt</div></div>
+      </div></div>
+      <div class="terminal" id="t-web"><span class="t-gray"># En attente...</span></div>
+    </div>
+
+    <!-- ══════════════════════════════════ NETWORK -->
+    <div id="page-network" class="page">
+      <div class="card">
+        <h2>⊶ Capture réseau passive</h2>
+        <div class="field-row">
+          <div class="field"><label>Interface</label><input type="text" id="net-iface" value="eth0"/></div>
+          <div class="field"><label>Durée (secondes)</label><input type="number" id="net-duration" value="300"/></div>
+        </div>
+        <div style="display:flex;gap:8px"><button class="btn btn-primary" id="btn-network" onclick="launchModule('network')">▶ Lancer</button><button class="btn btn-sm" onclick="clearTerm('t-network')">Vider</button></div>
+        <div class="progress-bar"><div class="progress-fill" id="prog-network"></div></div>
+      </div>
+      <div class="terminal" id="t-network"><span class="t-gray"># En attente...</span></div>
+    </div>
+
+    <!-- ══════════════════════════════════ AD -->
+    <div id="page-ad" class="page">
+      <div class="card">
+        <h2>⊞ Active Directory</h2>
+        <div class="field-row">
+          <div class="field"><label>IP du DC</label><input type="text" id="ad-dc" placeholder="192.168.1.10"/></div>
+          <div class="field"><label>Domaine</label><input type="text" id="ad-domain" placeholder="corp.local"/></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Utilisateur</label><input type="text" id="ad-user" placeholder="jdupont"/></div>
+          <div class="field"><label>Mot de passe</label><input type="password" id="ad-pass" placeholder="••••••••"/></div>
+        </div>
+        <div style="display:flex;gap:8px"><button class="btn btn-primary" id="btn-ad" onclick="launchModule('ad')">▶ Lancer</button><button class="btn btn-sm" onclick="clearTerm('t-ad')">Vider</button></div>
+        <div class="progress-bar"><div class="progress-fill" id="prog-ad"></div></div>
+      </div>
+      <div class="terminal" id="t-ad"><span class="t-gray"># En attente...</span></div>
+    </div>
+
+    <!-- ══════════════════════════════════ VULN -->
+    <div id="page-vuln" class="page">
+      <div class="card">
+        <h2>⚑ Scan de vulnérabilités</h2>
+        <div class="field"><label>Cible (IP ou domaine)</label><input type="text" id="vuln-target" placeholder="ex: example.com"/></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-primary" id="btn-vuln" onclick="launchModule('vuln')">▶ Lancer</button><button class="btn btn-sm" onclick="clearTerm('t-vuln')">Vider</button></div>
+        <div class="progress-bar"><div class="progress-fill" id="prog-vuln"></div></div>
+      </div>
+      <div class="card"><h2>Commandes</h2><div class="cmds-grid">
+        <div class="cmd-box"><div style="color:#E24B4A">Nuclei CVE</div><div class="cmd-code">nuclei -u $TARGET -t cves/ -severity critical,high</div></div>
+        <div class="cmd-box"><div style="color:#EF9F27">Nuclei Misconfig</div><div class="cmd-code">nuclei -u $TARGET -t misconfiguration/</div></div>
+        <div class="cmd-box"><div style="color:#AFA9EC">Nuclei Exposures</div><div class="cmd-code">nuclei -u $TARGET -t exposures/</div></div>
+        <div class="cmd-box"><div style="color:#85B7EB">Nmap NSE vuln</div><div class="cmd-code">nmap -sV --script vuln $TARGET</div></div>
+      </div></div>
+      <div class="terminal" id="t-vuln"><span class="t-gray"># En attente...</span></div>
+    </div>
+
+    <!-- ══════════════════════════════════ REPORTS -->
+    <div id="page-reports" class="page">
+      <div class="card">
+        <h2>☰ Rapports générés</h2>
+        <div id="reports-list"><span style="font-size:13px;color:#6b7280">Les rapports apparaîtront ici après chaque scan.</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const state={total:0,done:0,running:0,errors:0,vulns:{critical:0,high:0,medium:0,low:0},ports:0};
+const pageTitles={dashboard:'Dashboard',recon:'Reconnaissance',web:'Audit Web',network:'Réseau passif',ad:'Active Directory',vuln:'Vulnérabilités',reports:'Rapports'};
+const simReports=[];
+
+// ── Charts ──
+let chartActivity, chartSeverity, chartPorts, chartProgress, chartRisk;
+
+function initCharts(){
+  const gridColor='rgba(255,255,255,0.05)';
+  const tickColor='#6b7280';
+  const font={family:'-apple-system,sans-serif',size:11};
+
+  chartActivity = new Chart(document.getElementById('chart-activity'),{
+    type:'bar',
+    data:{
+      labels:['Recon','Web','Réseau','AD','Vulns'],
+      datasets:[
+        {label:'Terminés',data:[0,0,0,0,0],backgroundColor:'#1D9E75'},
+        {label:'En cours',data:[0,0,0,0,0],backgroundColor:'#EF9F27'},
+        {label:'Erreurs', data:[0,0,0,0,0],backgroundColor:'#E24B4A'}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font}},
+              y:{grid:{color:gridColor},ticks:{color:tickColor,font,stepSize:1}}}}
+  });
+
+  chartSeverity = new Chart(document.getElementById('chart-severity'),{
+    type:'doughnut',
+    data:{
+      labels:['Critique','Élevé','Moyen','Faible'],
+      datasets:[{data:[0,0,0,0],backgroundColor:['#E24B4A','#EF9F27','#AFA9EC','#85B7EB'],
+        borderColor:'#111827',borderWidth:2}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      cutout:'65%'}
+  });
+
+  chartPorts = new Chart(document.getElementById('chart-ports'),{
+    type:'bar',
+    data:{
+      labels:['21','22','80','443','445','3389','8080','Autres'],
+      datasets:[{label:'Ports',data:[0,0,0,0,0,0,0,0],backgroundColor:'#378ADD',borderRadius:3}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font}},
+              y:{grid:{color:gridColor},ticks:{color:tickColor,font,stepSize:1}}}}
+  });
+
+  chartProgress = new Chart(document.getElementById('chart-progress'),{
+    type:'line',
+    data:{
+      labels:[],
+      datasets:[{label:'Scans',data:[],borderColor:'#5DCAA5',backgroundColor:'rgba(29,158,117,0.1)',
+        tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#5DCAA5'}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font}},
+              y:{grid:{color:gridColor},ticks:{color:tickColor,font,stepSize:1}}}}
+  });
+
+  chartRisk = new Chart(document.getElementById('chart-risk'),{
+    type:'radar',
+    data:{
+      labels:['Recon','Web','Réseau','AD','Vulns'],
+      datasets:[{label:'Risque',data:[0,0,0,0,0],
+        borderColor:'#E24B4A',backgroundColor:'rgba(226,75,74,0.15)',
+        pointBackgroundColor:'#E24B4A',pointRadius:3}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{r:{grid:{color:gridColor},ticks:{color:tickColor,font,stepSize:2,backdropColor:'transparent'},
+                 pointLabels:{color:tickColor,font},min:0,max:10}}}
+  });
+}
+
+function updateCharts(){
+  const mods=['recon','web','network','ad','vuln'];
+  chartActivity.data.datasets[0].data = mods.map(m=>modState[m]==='done'?1:0);
+  chartActivity.data.datasets[1].data = mods.map(m=>modState[m]==='running'?1:0);
+  chartActivity.data.datasets[2].data = mods.map(m=>modState[m]==='error'?1:0);
+  chartActivity.update();
+
+  chartSeverity.data.datasets[0].data=[state.vulns.critical,state.vulns.high,state.vulns.medium,state.vulns.low];
+  chartSeverity.update();
+
+  // Simule ports découverts
+  if(modState['recon']==='done'){
+    chartPorts.data.datasets[0].data=[1,1,1,1,0,0,1,2];
+    chartPorts.update();
+    state.ports=7;
+    document.getElementById('s-ports').textContent=state.ports;
+  }
+
+  // Progression temporelle
+  const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  if(chartProgress.data.labels.length===0||chartProgress.data.labels[chartProgress.data.labels.length-1]!==now){
+    chartProgress.data.labels.push(now);
+    chartProgress.data.datasets[0].data.push(state.done);
+    if(chartProgress.data.labels.length>8){chartProgress.data.labels.shift();chartProgress.data.datasets[0].data.shift();}
+    chartProgress.update();
+  }
+
+  // Radar risque
+  const riskMap={'recon':modState['recon']==='done'?4:0,'web':modState['web']==='done'?7:0,
+    'network':modState['network']==='done'?3:0,'ad':modState['ad']==='done'?6:0,'vuln':modState['vuln']==='done'?8:0};
+  chartRisk.data.datasets[0].data=Object.values(riskMap);
+  chartRisk.update();
+}
+
+// ── Navigation ──
+function showPage(p,el){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.getElementById('page-title').textContent=pageTitles[p]||p;
+  if(el)el.classList.add('active');
+  else{const ni=document.querySelector(`.nav-item[data-page="${p}"]`);if(ni)ni.classList.add('active');}
+  if(p==='reports')refreshReports();
+}
+
+// ── Terminal ──
+function log(id,msg,cls){
+  const t=document.getElementById(id);
+  const d=document.createElement('div');
+  d.innerHTML=`<span class="${cls||''}">${msg}</span>`;
+  t.appendChild(d);t.scrollTop=t.scrollHeight;
+  if(id!=='t-dashboard'){const dt=document.getElementById('t-dashboard');const dl=document.createElement('div');dl.innerHTML=`<span class="${cls||''}">${msg}</span>`;dt.appendChild(dl);dt.scrollTop=dt.scrollHeight;}
+}
+function clearTerm(id){document.getElementById(id).innerHTML='<span class="t-gray"># Terminal vidé</span>';}
+
+// ── Stats ──
+function updateStats(){
+  document.getElementById('s-total').textContent=state.total;
+  document.getElementById('s-done').textContent=state.done;
+  document.getElementById('s-running').textContent=state.running;
+  const tv=state.vulns.critical+state.vulns.high+state.vulns.medium+state.vulns.low;
+  document.getElementById('s-vulns').textContent=tv;
+}
+
+const modState={recon:'idle',web:'idle',network:'idle',ad:'idle',vuln:'idle'};
+function setMod(mod,s,label){
+  modState[mod]=s;
+  const ms=document.getElementById('ms-'+mod);
+  const mc=document.getElementById('mc-'+mod);
+  if(ms){ms.className='mod-status s-'+s;ms.textContent=label;}
+  if(mc)mc.className='mod-card '+(s==='idle'?'':s);
+  updateCharts();
+}
+function setProgress(mod,pct){const b=document.getElementById('prog-'+mod);if(b)b.style.width=pct+'%';}
+
+// ── Commandes simulées ──
+const cmds={
+  recon:['[*] Lancement de la Reconnaissance','[*] Étape 1/5 — Whois','  $ whois $T','[+] Whois terminé','[*] Étape 2/5 — Subfinder','  $ subfinder -d $T -silent','[+] 14 sous-domaines trouvés','[*] Étape 3/5 — theHarvester','[+] theHarvester terminé','[*] Étape 4/5 — DNSrecon','[+] DNS terminé','[*] Étape 5/5 — Nmap','  $ nmap -sV -sC --open $T','[+] 7 ports ouverts détectés','[+] Rapport HTML généré','[+] Reconnaissance terminée'],
+  web:['[*] Lancement Audit Web','[*] Étape 1/3 — Nikto','  $ nikto -h $T','[+] 7 alertes détectées','[*] Étape 2/3 — Gobuster','  $ gobuster dir -u $T -w common.txt','[+] 23 répertoires trouvés','[*] Étape 3/3 — FFUF','[+] FFUF terminé','[+] Rapport HTML généré','[+] Audit Web terminé'],
+  network:['[*] Lancement capture réseau','  $ tcpdump -i eth0 -w capture.pcap','[*] Capture en cours...','[+] Capture terminée','[*] Analyse tshark...','[+] 42 hôtes uniques détectés','[+] Rapport généré'],
+  ad:['[*] Lancement Audit AD','[*] Étape 1/3 — ldapdomaindump','[+] LDAP dump terminé','[*] Étape 2/3 — enum4linux-ng','[+] Énumération terminée','[*] Étape 3/3 — BloodHound','[+] Collecte BloodHound terminée','[+] Rapport généré'],
+  vuln:['[*] Lancement Scan Vulnérabilités','[*] Mise à jour templates Nuclei...','[*] Scan CVE critique/élevé...','  $ nuclei -u $T -t cves/ -severity critical,high','[+] 3 CVE critiques détectées !','[+] 5 CVE élevées détectées','[*] Scan misconfiguration...','[+] 4 mauvaises configs trouvées','[*] Scan exposures...','[+] 2 fichiers sensibles exposés','[*] Nmap scripts vuln...','  $ nmap -sV --script vuln $T','[+] Nmap vuln terminé','[+] Rapport HTML généré','[+] Scan vulnérabilités terminé']
+};
+
+async function launchModule(mod){
+  const tgt={recon:document.getElementById('recon-target')?.value.trim(),
+    web:document.getElementById('web-target')?.value.trim(),
+    network:document.getElementById('net-iface')?.value.trim()||'eth0',
+    ad:document.getElementById('ad-dc')?.value.trim(),
+    vuln:document.getElementById('vuln-target')?.value.trim()};
+  const t=tgt[mod];
+  if(['recon','web','vuln'].includes(mod)&&!t){alert('Entrez une cible.');return;}
+  if(mod==='ad'){
+    if(!t||!document.getElementById('ad-domain')?.value||!document.getElementById('ad-user')?.value||!document.getElementById('ad-pass')?.value){alert('Tous les champs sont requis.');return;}
+  }
+  const termId='t-'+mod;
+  document.getElementById(termId).innerHTML='';
+  document.getElementById('btn-'+mod).disabled=true;
+  state.total++;state.running++;updateStats();
+  setMod(mod,'running','En cours...');setProgress(mod,0);
+  const label=mod==='network'?(document.getElementById('net-iface')?.value||'eth0'):t;
+  log(termId,`=== ${mod.toUpperCase()} — cible : ${label} ===`,'t-amber');
+  const lines=cmds[mod];
+  for(let i=0;i<lines.length;i++){
+    await new Promise(r=>setTimeout(r,380+Math.random()*300));
+    const l=lines[i].replace(/\$T/g,label);
+    const cls=l.startsWith('[+]')?'t-green':l.startsWith('[*]')?'t-amber':l.startsWith('[x]')?'t-red':'t-gray';
+    log(termId,l,cls);
+    setProgress(mod,Math.round(((i+1)/lines.length)*100));
+  }
+  state.running--;state.done++;
+  if(mod==='vuln'){state.vulns.critical+=3;state.vulns.high+=5;state.vulns.medium+=4;state.vulns.low+=2;}
+  updateStats();setMod(mod,'done','Terminé');
+  document.getElementById('btn-'+mod).disabled=false;
+  document.getElementById('global-status').textContent=`${state.done} terminé(s)`;
+  simReports.unshift({name:`report_${mod}_${label}_${Date.now()}.html`,mod,label,date:new Date().toLocaleString('fr-FR'),size:Math.floor(Math.random()*80+20)});
+  if(document.getElementById('page-reports').classList.contains('active'))refreshReports();
+}
+
+function refreshReports(){
+  const list=document.getElementById('reports-list');
+  if(!simReports.length){list.innerHTML='<span style="font-size:13px;color:#6b7280">Aucun rapport.</span>';return;}
+  const mc={recon:'#5DCAA5',web:'#85B7EB',network:'#EF9F27',ad:'#AFA9EC',vuln:'#E24B4A'};
+  list.innerHTML=simReports.map(r=>`
+    <div class="report-item">
+      <div>
+        <span style="font-size:11px;padding:2px 8px;border-radius:99px;background:#1f2937;color:${mc[r.mod]||'#9ca3af'};margin-right:6px">${r.mod}</span>
+        <span style="font-size:13px;color:#85B7EB">${r.name}</span>
+        <div class="report-meta">${r.date} — ${r.size} Ko — ${r.label}</div>
+      </div>
+      <button class="btn-sm">Ouvrir</button>
+    </div>`).join('');
+}
+
+window.addEventListener('load',()=>{
+  initCharts();
+  // Init progression avec timestamp
+  const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  chartProgress.data.labels.push(now);
+  chartProgress.data.datasets[0].data.push(0);
+  chartProgress.update();
+});
+</script>
+</body>
+</html>

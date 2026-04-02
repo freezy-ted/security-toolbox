@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+"""
+network_report.py — Rapport HTML du module Réseau passif
+"""
+import sys, os
+from datetime import datetime
+
+def read_file(path):
+    try:
+        with open(path, "r", errors="ignore") as f:
+            return f.read().strip()
+    except:
+        return None
+
+def count_lines(path):
+    c = read_file(path)
+    return len([l for l in c.splitlines() if l.strip()]) if c else 0
+
+def file_section(title, path, icon="📄"):
+    content = read_file(path)
+    if not content:
+        return f"<div class='section'><h2>{icon} {title}</h2><p class='empty'>Aucune donnée.</p></div>"
+    escaped = content.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+    return f"<div class='section'><h2>{icon} {title}</h2><pre>{escaped}</pre></div>"
+
+def hosts_table(path):
+    content = read_file(path)
+    if not content:
+        return "<p class='empty'>Aucun hôte détecté.</p>"
+    rows = "".join(f"<tr><td>{ip}</td></tr>" for ip in content.splitlines() if ip.strip())
+    return f"<table><thead><tr><th>Adresse IP</th></tr></thead><tbody>{rows}</tbody></table>"
+
+def generate(output_dir):
+    now = datetime.now().strftime("%d/%m/%Y à %H:%M")
+    hosts     = count_lines(os.path.join(output_dir, "hosts.txt"))
+    dns_count = count_lines(os.path.join(output_dir, "dns_queries.txt"))
+    http_count= count_lines(os.path.join(output_dir, "http_requests.txt"))
+
+    html = f"""<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"/>
+<title>Rapport Réseau — {now}</title>
+<style>
+* {{ box-sizing:border-box; margin:0; padding:0; }}
+body {{ font-family:-apple-system,sans-serif; background:#f5f5f5; color:#1a1a1a; line-height:1.6; }}
+header {{ background:#3b6d11; color:white; padding:2rem; }}
+header h1 {{ font-size:1.5rem; font-weight:500; }}
+header p {{ opacity:0.8; font-size:0.9rem; }}
+.stats {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px;
+          padding:1.5rem 2rem; background:white; border-bottom:1px solid #e0e0e0; }}
+.stat {{ background:#f9f9f9; border-radius:8px; padding:1rem; text-align:center; }}
+.stat-value {{ font-size:2rem; font-weight:500; color:#3b6d11; }}
+.stat-label {{ font-size:0.8rem; color:#666; }}
+.content {{ max-width:1100px; margin:2rem auto; padding:0 1.5rem; }}
+.section {{ background:white; border-radius:10px; border:1px solid #e0e0e0;
+            padding:1.5rem; margin-bottom:1.5rem; overflow:hidden; }}
+.section h2 {{ font-size:1rem; font-weight:500; margin-bottom:1rem;
+               padding-bottom:8px; border-bottom:1px solid #eee; }}
+pre {{ background:#1a1a1a; color:#d4d4d4; padding:1rem; border-radius:6px;
+       font-size:0.78rem; overflow-x:auto; max-height:400px; overflow-y:auto;
+       white-space:pre-wrap; }}
+table {{ width:100%; border-collapse:collapse; font-size:0.85rem; }}
+th,td {{ padding:8px 12px; text-align:left; border-bottom:1px solid #eee; }}
+th {{ background:#f0fff4; font-weight:500; }}
+.empty {{ color:#999; font-style:italic; font-size:0.9rem; }}
+footer {{ text-align:center; padding:2rem; color:#999; font-size:0.8rem; }}
+</style></head><body>
+<header>
+  <h1>Rapport Analyse Réseau</h1>
+  <p>Généré le {now}</p>
+</header>
+<div class="stats">
+  <div class="stat"><div class="stat-value">{hosts}</div><div class="stat-label">Hôtes détectés</div></div>
+  <div class="stat"><div class="stat-value">{dns_count}</div><div class="stat-label">Requêtes DNS</div></div>
+  <div class="stat"><div class="stat-value">{http_count}</div><div class="stat-label">Requêtes HTTP</div></div>
+  <div class="stat"><div class="stat-value">{now.split()[0]}</div><div class="stat-label">Date</div></div>
+</div>
+<div class="content">
+  <div class="section"><h2>🖥️ Hôtes actifs</h2>{hosts_table(os.path.join(output_dir,"hosts.txt"))}</div>
+  {file_section("Conversations TCP", os.path.join(output_dir,"conv_tcp.txt"), "🔗")}
+  {file_section("Requêtes DNS", os.path.join(output_dir,"dns_queries.txt"), "📡")}
+  {file_section("Requêtes HTTP", os.path.join(output_dir,"http_requests.txt"), "🌐")}
+  {file_section("Statistiques I/O", os.path.join(output_dir,"stats.txt"), "📊")}
+</div>
+<footer>Security Toolbox — usage autorisé uniquement</footer>
+</body></html>"""
+
+    out = os.path.join(output_dir, "report.html")
+    with open(out, "w") as f:
+        f.write(html)
+    print(f"[+] Rapport → {out}")
+
+if __name__ == "__main__":
+    generate(sys.argv[1])

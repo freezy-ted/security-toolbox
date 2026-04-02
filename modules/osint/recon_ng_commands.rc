@@ -1,0 +1,10 @@
+workspaces create osint_scan
+modules load recon/domains-hosts/hackertarget
+options set SOURCE auto
+run
+modules load recon/hosts-hosts/resolve
+run
+modules load recon/domains-contacts/whois_pocs
+run
+reporting/html
+exit

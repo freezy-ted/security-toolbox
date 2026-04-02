@@ -1,0 +1,74 @@
+version: "3.9"
+
+# ============================================================
+# Security Toolbox — docker-compose.yml
+# Usage : docker-compose up --build
+# Chaque module est indépendant et partage le dossier /output
+# ============================================================
+
+volumes:
+  toolbox_output:    # Résultats partagés entre tous les modules
+
+services:
+
+  # ── Interface Web (dashboard Flask) ───────────────────────
+  web:
+    build: ./web
+    container_name: toolbox_web
+    ports:
+      - "5000:5000"
+    volumes:
+      - toolbox_output:/output
+      - ./modules:/toolbox/modules:ro
+    environment:
+      - FLASK_ENV=development
+    restart: unless-stopped
+
+  # ── Module Reconnaissance ──────────────────────────────────
+  recon:
+    build: ./modules/recon
+    container_name: toolbox_recon
+    volumes:
+      - toolbox_output:/output
+    profiles: ["recon"]   # Lancé uniquement via : docker-compose --profile recon up
+    # Usage : docker-compose run recon <cible>
+
+  # ── Module Audit Web ──────────────────────────────────────
+  web_audit:
+    build: ./modules/web_audit
+    container_name: toolbox_web_audit
+    volumes:
+      - toolbox_output:/output
+    profiles: ["web"]
+    # Usage : docker-compose run web_audit <url>
+
+  # ── Module Réseau passif ──────────────────────────────────
+  network:
+    build: ./modules/network
+    container_name: toolbox_network
+    network_mode: host      # Nécessaire pour accéder aux interfaces réseau
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    volumes:
+      - toolbox_output:/output
+    profiles: ["network"]
+    # Usage : docker-compose run network eth0 300
+
+  # ── Module Active Directory ───────────────────────────────
+  ad_audit:
+    build: ./modules/ad_audit
+    container_name: toolbox_ad
+    volumes:
+      - toolbox_output:/output
+    profiles: ["ad"]
+    # Usage : docker-compose run ad_audit <DC_IP> <domain> <user> <pass>
+
+  # ── Rapport consolidé ─────────────────────────────────────
+  reporting:
+    build: ./modules/reporting
+    container_name: toolbox_report
+    volumes:
+      - toolbox_output:/output
+    profiles: ["report"]
+    # Usage : docker-compose run reporting --target <cible> --output /output/report_final.html
