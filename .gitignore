@@ -1,0 +1,10 @@
+Output/
+*.pcap
+*pdf
+*.pem
+*.key
+*.env
+__pycache__/
+*.pyc
+thumbs.db
+.DS_Store
