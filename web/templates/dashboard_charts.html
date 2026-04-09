@@ -250,19 +250,22 @@ header h1{font-size:1.1rem;font-weight:500;color:#fff;flex:1}
       </div></div>
       <div class="terminal" id="t-vuln"><span class="t-gray"># En attente...</span></div>
     </div>
-
     <!-- ══════════════════════════════════ REPORTS -->
     <div id="page-reports" class="page">
       <div class="card">
-        <h2>☰ Rapports générés</h2>
-        <div id="reports-list"><span style="font-size:13px;color:#6b7280">Les rapports apparaîtront ici après chaque scan.</span></div>
+        <h2>☰ Rapports disponibles</h2>
+        <div style="display:flex;gap:8px;margin-bottom:1rem">
+          <button class="btn-sm" onclick="loadReports()">↺ Actualiser</button>
+        </div>
+        <div id="reports-list">
+          <span style="font-size:13px;color:#6b7280">Chargement...</span>
+        </div>
       </div>
     </div>
-
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const state={total:0,done:0,running:0,errors:0,vulns:{critical:0,high:0,medium:0,low:0},ports:0};
 const pageTitles={dashboard:'Dashboard',recon:'Reconnaissance',web:'Audit Web',network:'Réseau passif',ad:'Active Directory',vuln:'Vulnérabilités',reports:'Rapports'};
@@ -458,19 +461,42 @@ async function launchModule(mod){
   if(document.getElementById('page-reports').classList.contains('active'))refreshReports();
 }
 
-function refreshReports(){
-  const list=document.getElementById('reports-list');
-  if(!simReports.length){list.innerHTML='<span style="font-size:13px;color:#6b7280">Aucun rapport.</span>';return;}
-  const mc={recon:'#5DCAA5',web:'#85B7EB',network:'#EF9F27',ad:'#AFA9EC',vuln:'#E24B4A'};
-  list.innerHTML=simReports.map(r=>`
-    <div class="report-item">
-      <div>
-        <span style="font-size:11px;padding:2px 8px;border-radius:99px;background:#1f2937;color:${mc[r.mod]||'#9ca3af'};margin-right:6px">${r.mod}</span>
-        <span style="font-size:13px;color:#85B7EB">${r.name}</span>
-        <div class="report-meta">${r.date} — ${r.size} Ko — ${r.label}</div>
-      </div>
-      <button class="btn-sm">Ouvrir</button>
-    </div>`).join('');
+async function refreshReports(){
+  const list = document.getElementById('reports-list');
+  list.innerHTML = '<span style="font-size:13px;color:#6b7280">Chargement...</span>';
+  try {
+    const r = await fetch('/api/reports');
+    const reports = await r.json();
+    if(!reports.length){
+      list.innerHTML='<span style="font-size:13px;color:#6b7280">Aucun rapport disponible.</span>';
+      return;
+    }
+    const mc={recon:'#5DCAA5',web:'#85B7EB',network:'#EF9F27',ad:'#AFA9EC',vuln:'#E24B4A',osint:'#5DCAA5'};
+    list.innerHTML = reports.map(r => {
+      const mod = Object.keys(mc).find(m => r.name.includes(m)) || 'other';
+      return `
+        <div class="report-item">
+          <div style="flex:1">
+            <span style="font-size:11px;padding:2px 8px;border-radius:99px;background:#1f2937;color:${mc[mod]||'#9ca3af'};margin-right:6px">${mod}</span>
+            <span style="font-size:13px;color:#e0e0e0">${r.name}</span>
+            <div class="report-meta">${r.date} — ${Math.round(r.size/1024)} Ko</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn-sm" onclick="openReport('${r.path}')">Ouvrir</button>
+          </div>
+        </div>`;
+    }).join('');
+    document.getElementById('s-reports').textContent = reports.length;
+  } catch(e) {
+    list.innerHTML='<span style="color:#E24B4A;font-size:13px">Erreur de chargement</span>';
+  }
+}
+
+async function loadReports(){ refreshReports(); }
+
+function openReport(path){
+  const relative = path.replace('/output/','');
+  window.open('/reports/' + relative, '_blank');
 }
 
 window.addEventListener('load',()=>{
