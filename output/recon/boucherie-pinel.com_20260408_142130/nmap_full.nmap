@@ -1,0 +1,3 @@
+# Nmap 7.98 scan initiated Wed Apr  8 14:25:19 2026 as: /usr/lib/nmap/nmap -sV -p- --open -T4 -oA /output/recon/boucherie-pinel.com_20260408_142130/nmap_full boucherie-pinel.com
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Wed Apr  8 14:45:55 2026 -- 1 IP address (1 host up) scanned in 1235.74 seconds

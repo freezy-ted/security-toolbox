@@ -1,0 +1,19 @@
+# Nmap 7.98 scan initiated Wed Apr  8 14:23:52 2026 as: /usr/lib/nmap/nmap -sV -sC --open -T4 -oA /output/recon/boucherie-pinel.com_20260408_142130/nmap_fast boucherie-pinel.com
+Nmap scan report for boucherie-pinel.com (109.197.246.71)
+Host is up (0.26s latency).
+rDNS record for 109.197.246.71: vweb1.axecibles.com
+Not shown: 877 filtered tcp ports (no-response), 121 filtered tcp ports (host-unreach)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT    STATE SERVICE  VERSION
+80/tcp  open  http     nginx 1.22.1
+|_http-server-header: nginx/1.22.1
+|_http-title: Did not follow redirect to https://boucherie-pinel.com/
+443/tcp open  ssl/http nginx
+|_http-title: Did not follow redirect to https://www.boucherie-pinel.com/
+| ssl-cert: Subject: commonName=boucherie-pinel.com
+| Subject Alternative Name: DNS:boucherie-pinel.com, DNS:www.boucherie-pinel.com
+| Not valid before: 2026-03-15T02:54:46
+|_Not valid after:  2026-06-13T02:54:45
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Wed Apr  8 14:25:19 2026 -- 1 IP address (1 host up) scanned in 87.09 seconds

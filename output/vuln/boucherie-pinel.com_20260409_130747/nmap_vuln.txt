@@ -1,0 +1,44 @@
+# Nmap 7.98 scan initiated Thu Apr  9 13:07:49 2026 as: /usr/lib/nmap/nmap -sV --script vuln -oN /output/vuln/boucherie-pinel.com_20260409_130747/nmap_vuln.txt boucherie-pinel.com
+Nmap scan report for boucherie-pinel.com (109.197.246.71)
+Host is up (0.31s latency).
+rDNS record for 109.197.246.71: vweb1.axecibles.com
+Not shown: 993 filtered tcp ports (no-response), 5 filtered tcp ports (host-unreach)
+PORT    STATE SERVICE  VERSION
+80/tcp  open  http     nginx 1.22.1
+|_http-server-header: nginx/1.22.1
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+| vulners: 
+|   nginx 1.22.1: 
+|     	NGINX:CVE-2026-27654	8.8	https://vulners.com/nginx/NGINX:CVE-2026-27654
+|     	3F71F065-66D4-541F-A813-9F1A2F2B1D91	8.8	https://vulners.com/githubexploit/3F71F065-66D4-541F-A813-9F1A2F2B1D91	*EXPLOIT*
+|     	NGINX:CVE-2026-27651	8.7	https://vulners.com/nginx/NGINX:CVE-2026-27651
+|     	NGINX:CVE-2026-32647	8.5	https://vulners.com/nginx/NGINX:CVE-2026-32647
+|     	NGINX:CVE-2026-27784	8.5	https://vulners.com/nginx/NGINX:CVE-2026-27784
+|     	NGINX:CVE-2026-1642	8.2	https://vulners.com/nginx/NGINX:CVE-2026-1642
+|     	NGINX:CVE-2022-41741	7.8	https://vulners.com/nginx/NGINX:CVE-2022-41741
+|     	DF041B2B-2DA7-5262-AABE-9EBD2D535041	7.8	https://vulners.com/githubexploit/DF041B2B-2DA7-5262-AABE-9EBD2D535041	*EXPLOIT*
+|     	NGINX:CVE-2022-41742	7.1	https://vulners.com/nginx/NGINX:CVE-2022-41742
+|     	NGINX:CVE-2026-28753	6.3	https://vulners.com/nginx/NGINX:CVE-2026-28753
+|     	NGINX:CVE-2025-53859	6.3	https://vulners.com/nginx/NGINX:CVE-2025-53859
+|     	NGINX:CVE-2024-7347	5.7	https://vulners.com/nginx/NGINX:CVE-2024-7347
+|_    	NGINX:CVE-2025-23419	5.3	https://vulners.com/nginx/NGINX:CVE-2025-23419
+443/tcp open  ssl/http nginx
+| http-csrf: 
+| Spidering limited to: maxdepth=3; maxpagecount=20; withinhost=boucherie-pinel.com
+|   Found the following possible CSRF vulnerabilities: 
+|     
+|     Path: https://www.boucherie-pinel.com:443/
+|     Form id: form_newsletter
+|     Form action: #
+|     
+|     Path: https://www.boucherie-pinel.com:443/rappel-telephonique.php
+|     Form id: formulaire_2
+|_    Form action: /rappel-telephonique.php
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+
+Read data files from: /usr/share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Thu Apr  9 13:31:14 2026 -- 1 IP address (1 host up) scanned in 1405.14 seconds

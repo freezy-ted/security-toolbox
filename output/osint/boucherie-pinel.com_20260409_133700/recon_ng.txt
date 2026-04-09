@@ -1,0 +1,43 @@
+[32m[*][m Version check disabled.
+
+    _/_/_/    _/_/_/_/    _/_/_/    _/_/_/    _/      _/            _/      _/    _/_/_/
+   _/    _/  _/        _/        _/      _/  _/_/    _/            _/_/    _/  _/       
+  _/_/_/    _/_/_/    _/        _/      _/  _/  _/  _/  _/_/_/_/  _/  _/  _/  _/  _/_/_/
+ _/    _/  _/        _/        _/      _/  _/    _/_/            _/    _/_/  _/      _/ 
+_/    _/  _/_/_/_/    _/_/_/    _/_/_/    _/      _/            _/      _/    _/_/_/    
+
+
+                                          /\
+                                         / \\ /\
+    Sponsored by...               /\  /\/  \\V  \/\
+                                 / \\/ // \\\\\ \\ \/\
+                                // // BLACK HILLS \/ \\
+                               www.blackhillsinfosec.com
+
+                  ____   ____   ____   ____ _____ _  ____   ____  ____
+                 |____] | ___/ |____| |       |   | |____  |____ |
+                 |      |   \_ |    | |____   |   |  ____| |____ |____
+                                   www.practisec.com
+
+                      [33m[recon-ng v5.1.2, Tim Tomes (@lanmaster53)][m                       
+
+[32m[*][m No modules enabled/installed.
+
+[recon-ng][default] > workspaces create osint_scan
+[recon-ng][osint_scan] > modules load recon/domains-hosts/hackertarget
+[31m[!] Invalid module name.[m
+[recon-ng][osint_scan] > options set SOURCE auto
+[31m[!] Invalid option name.[m
+[recon-ng][osint_scan] > run
+[31m[!] Invalid command: run.[m
+[recon-ng][osint_scan] > modules load recon/hosts-hosts/resolve
+[31m[!] Invalid module name.[m
+[recon-ng][osint_scan] > run
+[31m[!] Invalid command: run.[m
+[recon-ng][osint_scan] > modules load recon/domains-contacts/whois_pocs
+[31m[!] Invalid module name.[m
+[recon-ng][osint_scan] > run
+[31m[!] Invalid command: run.[m
+[recon-ng][osint_scan] > reporting/html
+[31m[!] Invalid command: reporting/html.[m
+[recon-ng][osint_scan] > exit

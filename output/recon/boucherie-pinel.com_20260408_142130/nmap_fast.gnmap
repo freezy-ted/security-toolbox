@@ -1,0 +1,4 @@
+# Nmap 7.98 scan initiated Wed Apr  8 14:23:52 2026 as: /usr/lib/nmap/nmap -sV -sC --open -T4 -oA /output/recon/boucherie-pinel.com_20260408_142130/nmap_fast boucherie-pinel.com
+Host: 109.197.246.71 (vweb1.axecibles.com)	Status: Up
+Host: 109.197.246.71 (vweb1.axecibles.com)	Ports: 80/open/tcp//http//nginx 1.22.1/, 443/open/tcp//ssl|http//nginx/	Ignored State: filtered (998)
+# Nmap done at Wed Apr  8 14:25:19 2026 -- 1 IP address (1 host up) scanned in 87.09 seconds

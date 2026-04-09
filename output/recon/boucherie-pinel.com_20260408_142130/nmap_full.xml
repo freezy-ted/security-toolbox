@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.98 scan initiated Wed Apr  8 14:25:19 2026 as: /usr/lib/nmap/nmap -sV -p- -&#45;open -T4 -oA /output/recon/boucherie-pinel.com_20260408_142130/nmap_full boucherie-pinel.com -->
+<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -sV -p- -&#45;open -T4 -oA /output/recon/boucherie-pinel.com_20260408_142130/nmap_full boucherie-pinel.com" start="1775658319" startstr="Wed Apr  8 14:25:19 2026" version="7.98" xmloutputversion="1.05">
+<scaninfo type="syn" protocol="tcp" numservices="65535" services="1-65535"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="unknown-response" reason_ttl="0"/>
+<address addr="109.197.246.71" addrtype="ipv4"/>
+<hostnames>
+<hostname name="boucherie-pinel.com" type="user"/>
+</hostnames>
+</hosthint>
+<taskprogress task="SYN Stealth Scan" time="1775659215" percent="78.36" remaining="248" etc="1775659462"/>
+<taskprogress task="SYN Stealth Scan" time="1775659219" percent="78.62" remaining="245" etc="1775659464"/>
+<taskprogress task="SYN Stealth Scan" time="1775659222" percent="78.79" remaining="243" etc="1775659465"/>
+<taskprogress task="SYN Stealth Scan" time="1775659226" percent="79.07" remaining="240" etc="1775659466"/>
+<taskprogress task="SYN Stealth Scan" time="1775659227" percent="79.14" remaining="240" etc="1775659466"/>
+<taskprogress task="SYN Stealth Scan" time="1775659228" percent="79.19" remaining="239" etc="1775659467"/>
+<taskprogress task="SYN Stealth Scan" time="1775659228" percent="79.22" remaining="239" etc="1775659466"/>
+<taskprogress task="SYN Stealth Scan" time="1775659230" percent="79.34" remaining="237" etc="1775659467"/>
+<taskprogress task="SYN Stealth Scan" time="1775659231" percent="79.39" remaining="237" etc="1775659467"/>
+<taskprogress task="SYN Stealth Scan" time="1775659231" percent="79.45" remaining="236" etc="1775659467"/>
+<taskprogress task="SYN Stealth Scan" time="1775659232" percent="79.49" remaining="236" etc="1775659467"/>
+<taskprogress task="SYN Stealth Scan" time="1775659233" percent="79.53" remaining="235" etc="1775659468"/>
+<taskprogress task="SYN Stealth Scan" time="1775659233" percent="79.57" remaining="235" etc="1775659467"/>
+<taskprogress task="SYN Stealth Scan" time="1775659234" percent="79.63" remaining="234" etc="1775659468"/>
+<taskprogress task="SYN Stealth Scan" time="1775659235" percent="79.69" remaining="234" etc="1775659468"/>
+<taskprogress task="SYN Stealth Scan" time="1775659236" percent="79.73" remaining="233" etc="1775659469"/>
+<taskprogress task="SYN Stealth Scan" time="1775659237" percent="79.81" remaining="233" etc="1775659469"/>
+<taskprogress task="SYN Stealth Scan" time="1775659238" percent="79.86" remaining="232" etc="1775659469"/>
+<taskprogress task="SYN Stealth Scan" time="1775659239" percent="79.92" remaining="231" etc="1775659470"/>
+<taskprogress task="SYN Stealth Scan" time="1775659240" percent="79.98" remaining="231" etc="1775659470"/>
+<taskprogress task="SYN Stealth Scan" time="1775659241" percent="80.04" remaining="230" etc="1775659471"/>
+<taskprogress task="SYN Stealth Scan" time="1775659245" percent="80.33" remaining="227" etc="1775659471"/>
+<taskprogress task="SYN Stealth Scan" time="1775659246" percent="80.39" remaining="226" etc="1775659472"/>
+<taskprogress task="SYN Stealth Scan" time="1775659248" percent="80.49" remaining="225" etc="1775659473"/>
+<taskprogress task="SYN Stealth Scan" time="1775659249" percent="80.57" remaining="225" etc="1775659473"/>
+<taskprogress task="SYN Stealth Scan" time="1775659250" percent="80.62" remaining="224" etc="1775659473"/>
+<taskprogress task="SYN Stealth Scan" time="1775659251" percent="80.69" remaining="223" etc="1775659474"/>
+<taskprogress task="SYN Stealth Scan" time="1775659263" percent="81.44" remaining="215" etc="1775659478"/>
+<taskprogress task="SYN Stealth Scan" time="1775659280" percent="82.56" remaining="203" etc="1775659483"/>
+<runstats><finished time="1775659555" timestr="Wed Apr  8 14:45:55 2026" summary="Nmap done at Wed Apr  8 14:45:55 2026; 1 IP address (1 host up) scanned in 1235.74 seconds" elapsed="1235.74" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>

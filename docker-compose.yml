@@ -63,6 +63,23 @@ services:
     profiles: ["ad"]
     # Usage : docker-compose run ad_audit <DC_IP> <domain> <user> <pass>
 
+  # ── Module Vulnérabilité ─────────────────────────────────────
+  vuln:
+    build: ./modules/vuln
+    container_name: toolbox_vuln
+    volumes:
+      - /opt/security-toolbox/output:/output
+    profiles: ["vuln"]
+
+  # ── Module Osint  ─────────────────────────────────────
+  osint:
+    build: ./modules/osint
+    container_name: toolbox_osint
+    volumes:
+      - /opt/security-toolbox/output:/output
+    environment:
+      - SHODAN_API_KEY=${SHODAN_API_KEY:-}
+    profiles: ["osint"]
   # ── Rapport consolidé ─────────────────────────────────────
   reporting:
     build: ./modules/reporting

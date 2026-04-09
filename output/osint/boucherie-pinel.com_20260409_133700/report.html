@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Rapport OSINT — boucherie-pinel.com</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f5f5;color:#1a1a1a;line-height:1.6}
+header{background:#185fa5;color:white;padding:2rem 2rem}
+header h1{font-size:1.5rem;font-weight:500;margin-bottom:4px}
+header p{opacity:.85;font-size:.9rem}
+.header-meta{display:flex;gap:1rem;margin-top:10px;flex-wrap:wrap}
+.hbadge{font-size:11px;padding:4px 12px;border-radius:99px;background:rgba(255,255,255,.2)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;padding:1.5rem 2rem;background:white;border-bottom:1px solid #e0e0e0}
+.stat{background:#f9f9f9;border-radius:8px;padding:1rem;text-align:center}
+.stat-value{font-size:2rem;font-weight:500;color:#185fa5}
+.stat-label{font-size:.78rem;color:#666;margin-top:2px}
+.content{max-width:1200px;margin:2rem auto;padding:0 1.5rem}
+.toc{background:white;border-radius:10px;border:1px solid #e0e0e0;padding:1.25rem;margin-bottom:2rem}
+.toc h2{font-size:.9rem;font-weight:500;margin-bottom:10px}
+.toc ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.toc a{text-decoration:none;color:#185fa5;font-size:.82rem;padding:4px 12px;background:#e6f1fb;border-radius:99px}
+.section{background:white;border-radius:10px;border:1px solid #e0e0e0;padding:1.5rem;margin-bottom:1rem;overflow:hidden}
+.section h2{font-size:.95rem;font-weight:500;margin-bottom:1rem;padding-bottom:8px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px}
+.count{font-size:.8rem;color:#185fa5;background:#e6f1fb;padding:2px 8px;border-radius:99px;font-weight:400}
+pre{background:#1a1a1a;color:#d4d4d4;padding:1rem;border-radius:6px;font-size:.75rem;line-height:1.6;overflow-x:auto;max-height:320px;overflow-y:auto;white-space:pre-wrap}
+.list-item{padding:5px 0;border-bottom:1px solid #f0f0f0;font-size:.85rem;display:flex;align-items:center;gap:8px}
+.list-item:last-child{border-bottom:none}
+.empty{color:#999;font-style:italic;font-size:.88rem}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+footer{text-align:center;padding:2rem;color:#999;font-size:.78rem;border-top:1px solid #e0e0e0;margin-top:2rem}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr}}
+</style></head><body>
+
+<header>
+  <h1>Rapport OSINT</h1>
+  <p>Cible : <strong>boucherie-pinel.com</strong> &nbsp;·&nbsp; Type : domain &nbsp;·&nbsp; 09/04/2026 à 13:46</p>
+  <div class="header-meta">
+    <span class="hbadge">Security Toolbox v1.0</span>
+    <span class="hbadge">Sources publiques uniquement</span>
+    <span class="hbadge">Usage autorisé uniquement</span>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="stat-value">2</div><div class="stat-label">Sous-domaines</div></div>
+  <div class="stat"><div class="stat-value">1</div><div class="stat-label">Emails trouvés</div></div>
+  <div class="stat"><div class="stat-value">0</div><div class="stat-label">IPs détectées</div></div>
+  <div class="stat"><div class="stat-value">09/04/2026</div><div class="stat-label">Date</div></div>
+</div>
+
+<div class="content">
+
+  <div class="toc"><h2>Sommaire</h2><ul>
+    <li><a href="#whois">Whois</a></li>
+    <li><a href="#dns">DNS</a></li>
+    <li><a href="#subdomains">Sous-domaines</a></li>
+    <li><a href="#emails">Emails</a></li>
+    <li><a href="#ips">IPs</a></li>
+    <li><a href="#shodan">Shodan</a></li>
+    <li><a href="#harvester">theHarvester</a></li>
+  </ul></div>
+
+  <div class="grid-2">
+    <div id="whois"><div class='section'><h2>🔎 Whois</h2><pre>Domain Name: BOUCHERIE-PINEL.COM
+   Registry Domain ID: 2594187192_DOMAIN_COM-VRSN
+   Registrar WHOIS Server: whois.namebay.com
+   Registrar URL: http://www.namebay.com
+   Updated Date: 2026-02-12T09:57:26Z
+   Creation Date: 2021-02-26T17:17:45Z
+   Registry Expiry Date: 2027-02-26T17:17:45Z
+   Registrar: Namebay SAM
+   Registrar IANA ID: 88
+   Registrar Abuse Contact Email: abuse@namebay.com
+   Registrar Abuse Contact Phone: +377.97706164
+   Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited
+   Name Server: DNSAXE1.AXECIBLES.COM
+   Name Server: DNSAXE2.AXECIBLES.COM
+   DNSSEC: unsigned
+   URL of the ICANN Whois Inaccuracy Complaint Form: https://www.icann.org/wicf/
+&gt;&gt;&gt; Last update of whois database: 2026-04-09T13:36:50Z &lt;&lt;&lt;
+
+For more information on Whois status codes, please visit https://icann.org/epp
+
+NOTICE: The expiration date displayed in this record is the date the
+registrar's sponsorship of the domain name registration in the registry is
+currently set to expire. This date does not necessarily reflect the expiration
+date of the domain name registrant's agreement with the sponsoring
+registrar.  Users may consult the sponsoring registrar's Whois database to
+view the registrar's reported date of expiration for this registration.
+
+TERMS OF USE: You are not authorized to access or query our Whois
+database through the use of electronic processes that are high-volume and
+automated except as reasonably necessary to register domain names or
+modify existing registrations; the Data in VeriSign Global Registry
+Services' ("VeriSign") Whois database is provided by VeriSign for
+information purposes only, and to assist persons in obtaining information
+about or related to a domain name registration record. VeriSign does not
+guarantee its accuracy. By submitting a Whois query, you agree to abide
+by the following terms of use: You agree that you may use this Data only
+for lawful purposes and that under no circumstances will you use this Data
+to: (1) allow, enable, or otherwise support the transmission of mass
+unsolicited, commercial advertising or solicitations via e-mail, telephone,
+or facsimile; or (2) enable high volume, automated, electronic processes
+that apply to VeriSign (or its computer systems). The compilation,
+repackaging, dissemination or other use of this Data is expressly
+prohibited without the prior written consent of VeriSign. You agree not to
+use electronic processes that are automated and high-volume to access or
+query the Whois database except as reasonably necessary to register
+domain names or modify existing registrations. VeriSign reserves the right
+to restrict your access to the Whois database in its sole discretion to ensure
+operational stability.  VeriSign may restrict or terminate your access to the
+Whois database for failure to abide by these terms of use. VeriSign
+reserves the right to modify these terms at any time.
+
+The Registry database contains ONLY .COM, .NET, .EDU domains and
+Registrars.
+Domain Name: boucherie-pinel.com
+Registry Domain ID 2594187192_DOMAIN_COM-VRSN
+Registrar WHOIS Server: whois.namebay.com
+Registrar URL: www.namebay.com
+Updated Date: 2026-02-11 04:12:44.917
+Creation Date: 2021-02-26 00:00:00.000
+Registrar Registration Expiration Date: 2027-02-26 00:00:00.000
+Registrar: Namebay
+Registrar IANA ID: 88
+Registrar Abuse Contact Email: abuse@namebay.com
+Registrar Abuse Contact Phone: +377.97706164
+Reseller Name: REDACTED FOR PRIVACY
+Domain Status: protected https://www.icann.org/epp#protected
+Registry Registrant ID: 1271301
+Registrant Name: REDACTED FOR PRIVACY
+Registrant Organization: REDACTED FOR PRIVACY
+Registrant Street: REDACTED FOR PRIVACY
+Registrant City: REDACTED FOR PRIVACY
+Registrant State\Province: 
+Registrant Postal Code: REDACTED FOR PRIVACY
+Registrant Country: FR
+Registrant Phone: REDACTED FOR PRIVACY
+Registrant Phone Ext: REDACTED FOR PRIVACY
+Registrant Fax: REDACTED FOR PRIVACY
+Registrant Fax Ext: REDACTED FOR PRIVACY
+Registrant Email: https://www.validname.com/whoiscontact/?id=B8581B25-59BA-4894-B58C-7663A93AF876&amp;c=O
+Registry Admin ID: Not available from the registry
+Admin Name: REDACTED FOR PRIVACY
+Admin Organization: REDACTED FOR PRIVACY
+Admin Street: REDACTED FOR PRIVACY
+Admin City: REDACTED FOR PRIVACY
+Admin State\Province: REDACTED FOR PRIVACY
+Admin Postal Code: REDACTED FOR PRIVACY
+Admin Country: REDACTED FOR PRIVACY
+Admin Phone: REDACTED FOR PRIVACY
+Admin Phone Ext: REDACTED FOR PRIVACY
+Admin Fax: REDACTED FOR PRIVACY
+Admin Fax Ext: REDACTED FOR PRIVACY
+Admin Email: https://www.validname.com/whoiscontact/?id=B8581B25-59BA-4894-B58C-7663A93AF876&amp;c=A
+Registry Tech ID: Not available from the registry
+Tech Name: REDACTED FOR PRIVACY
+Tech Organization: REDACTED FOR PRIVACY
+Tech Street: REDACTED FOR PRIVACY
+Tech City: REDACTED FOR PRIVACY
+Tech State\Province: REDACTED FOR PRIVACY
+Tech Postal Code: REDACTED FOR PRIVACY
+Tech Country: REDACTED FOR PRIVACY
+Tech Phone: REDACTED FOR PRIVACY
+Tech Phone Ext: REDACTED FOR PRIVACY
+Tech Fax: REDACTED FOR PRIVACY
+Tech Fax Ext: REDACTED FOR PRIVACY
+Tech Email: https://www.validname.com/whoiscontact/?id=B8581B25-59BA-4894-B58C-7663A93AF876&amp;c=T
+Name Server: dnsaxe1.axecibles.com
+Name Server: dnsaxe2.axecibles.com
+DNSSEC: unsigned
+URL of the ICANN WHOIS Data Problem Reporting System: http://wdprs.internic.net/
+&gt;&gt;&gt; Last update of WHOIS database: 2026-04-09 13:37:00 &lt;&lt;&lt;
+
+For more information on Whois status codes, please visit https://www.icann.org/epp</pre></div></div>
+    <div id="dns"><div class='section'><h2>📡 Enregistrements DNS</h2><pre>boucherie-pinel.com.	5	IN	MX	10 mx.axecibles.com.
+boucherie-pinel.com.	5	IN	TXT	"v=spf1 a mx include:_spf.axecibles.com -all"</pre></div></div>
+  </div>
+
+  <div id="subdomains"><div class='section'><h2>🌐 Sous-domaines découverts <span class='count'>(2)</span></h2><div class="list-item"><span style="color:#185fa5">→</span> media.boucherie-pinel.com</div><div class="list-item"><span style="color:#185fa5">→</span> www.boucherie-pinel.com</div></div></div>
+  <div id="emails"><div class='section'><h2>✉️ Emails trouvés <span class='count'>(1)</span></h2><div class="list-item"><span style="color:#0f6e56">→</span> abuse@namebay.com</div></div></div>
+  <div id="ips"><div class='section'><h2>🖥️ Adresses IP détectées</h2><p class='empty'>Aucun résultat.</p></div></div>
+
+  <div id="shodan">
+    <div class="grid-2">
+      <div class='section'><h2>🛰️ Shodan — Host</h2><p class='empty'>Aucune donnée.</p></div>
+      <div class='section'><h2>🏢 Shodan — Organisation</h2><p class='empty'>Aucune donnée.</p></div>
+    </div>
+  </div>
+
+  <div id="harvester">
+    <div class='section'><h2>🔍 theHarvester — Google</h2><p class='empty'>Aucune donnée.</p></div>
+    <div class='section'><h2>💼 theHarvester — LinkedIn</h2><p class='empty'>Aucune donnée.</p></div>
+  </div>
+
+  <div class='section'><h2>⚙️ Recon-ng</h2><pre>[32m[*][m Version check disabled.
+
+    _/_/_/    _/_/_/_/    _/_/_/    _/_/_/    _/      _/            _/      _/    _/_/_/
+   _/    _/  _/        _/        _/      _/  _/_/    _/            _/_/    _/  _/       
+  _/_/_/    _/_/_/    _/        _/      _/  _/  _/  _/  _/_/_/_/  _/  _/  _/  _/  _/_/_/
+ _/    _/  _/        _/        _/      _/  _/    _/_/            _/    _/_/  _/      _/ 
+_/    _/  _/_/_/_/    _/_/_/    _/_/_/    _/      _/            _/      _/    _/_/_/    
+
+
+                                          /\
+                                         / \\ /\
+    Sponsored by...               /\  /\/  \\V  \/\
+                                 / \\/ // \\\\\ \\ \/\
+                                // // BLACK HILLS \/ \\
+                               www.blackhillsinfosec.com
+
+                  ____   ____   ____   ____ _____ _  ____   ____  ____
+                 |____] | ___/ |____| |       |   | |____  |____ |
+                 |      |   \_ |    | |____   |   |  ____| |____ |____
+                                   www.practisec.com
+
+                      [33m[recon-ng v5.1.2, Tim Tomes (@lanmaster53)][m                       
+
+[32m[*][m No modules enabled/installed.
+
+[recon-ng][default] &gt; workspaces create osint_scan
+[recon-ng][osint_scan] &gt; modules load recon/domains-hosts/hackertarget
+[31m[!] Invalid module name.[m
+[recon-ng][osint_scan] &gt; options set SOURCE auto
+[31m[!] Invalid option name.[m
+[recon-ng][osint_scan] &gt; run
+[31m[!] Invalid command: run.[m
+[recon-ng][osint_scan] &gt; modules load recon/hosts-hosts/resolve
+[31m[!] Invalid module name.[m
+[recon-ng][osint_scan] &gt; run
+[31m[!] Invalid command: run.[m
+[recon-ng][osint_scan] &gt; modules load recon/domains-contacts/whois_pocs
+[31m[!] Invalid module name.[m
+[recon-ng][osint_scan] &gt; run
+[31m[!] Invalid command: run.[m
+[recon-ng][osint_scan] &gt; reporting/html
+[31m[!] Invalid command: reporting/html.[m
+[recon-ng][osint_scan] &gt; exit</pre></div>
+  <div class='section'><h2>⚠️ Transfert de zone DNS</h2><pre>; &lt;&lt;&gt;&gt; DiG 9.20.20-1-Debian &lt;&lt;&gt;&gt; AXFR @dnsaxe1.axecibles.com. boucherie-pinel.com
+; (1 server found)
+;; global options: +cmd
+; Transfer failed.
+
+; &lt;&lt;&gt;&gt; DiG 9.20.20-1-Debian &lt;&lt;&gt;&gt; AXFR @dnsaxe2.axecibles.com. boucherie-pinel.com
+; (1 server found)
+;; global options: +cmd
+; Transfer failed.</pre></div>
+
+</div>
+<footer>Security Toolbox — OSINT basé sur sources publiques uniquement — usage autorisé</footer>
+</body></html>
