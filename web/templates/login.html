@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Security Toolbox — Login</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;background:#0f1117;color:#e0e0e0;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.card{background:#111827;border:1px solid #1f2937;border-radius:12px;padding:2rem;width:100%;max-width:380px}
+.logo{text-align:center;margin-bottom:2rem}
+.logo h1{font-size:1.3rem;font-weight:500;color:#fff}
+.logo p{font-size:12px;color:#6b7280;margin-top:4px}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:12px;color:#9ca3af;margin-bottom:6px}
+.field input{width:100%;padding:10px 12px;font-size:14px;background:#1f2937;border:1px solid #374151;border-radius:8px;color:#e0e0e0;outline:none}
+.field input:focus{border-color:#1D9E75}
+.btn-login{width:100%;padding:10px;font-size:14px;font-weight:500;background:#1D9E75;color:white;border:none;border-radius:8px;cursor:pointer;margin-top:0.5rem}
+.btn-login:hover{opacity:0.85}
+.error{background:#a32d2d20;border:1px solid #E24B4A40;color:#E24B4A;font-size:13px;padding:10px 12px;border-radius:8px;margin-bottom:1rem}
+.warning{text-align:center;font-size:11px;color:#4b5563;margin-top:1.5rem}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <h1>⚙ Security Toolbox</h1>
+    <p>Plateforme d'audit de sécurité</p>
+  </div>
+  {% if error %}
+  <div class="error">{{ error }}</div>
+  {% endif %}
+  <form method="POST">
+    <div class="field">
+      <label>Utilisateur</label>
+      <input type="text" name="username" placeholder="admin" autofocus/>
+    </div>
+    <div class="field">
+      <label>Mot de passe</label>
+      <input type="password" name="password" placeholder="••••••••"/>
+    </div>
+    <button type="submit" class="btn-login">Se connecter</button>
+  </form>
+  <p class="warning">Usage autorisé uniquement</p>
+</div>
+</body>
+</html>
