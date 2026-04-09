@@ -1,4 +1,3 @@
-version: "3.9"
 
 # ============================================================
 # Security Toolbox — docker-compose.yml
@@ -18,7 +17,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - toolbox_output:/output
+      - /opt/security-toolbox/output:/output
       - ./modules:/toolbox/modules:ro
     environment:
       - FLASK_ENV=development
@@ -29,7 +28,7 @@ services:
     build: ./modules/recon
     container_name: toolbox_recon
     volumes:
-      - toolbox_output:/output
+      - /opt/security-toolbox/output:/output
     profiles: ["recon"]   # Lancé uniquement via : docker-compose --profile recon up
     # Usage : docker-compose run recon <cible>
 
@@ -38,7 +37,7 @@ services:
     build: ./modules/web_audit
     container_name: toolbox_web_audit
     volumes:
-      - toolbox_output:/output
+      - /opt/security-toolbox/output:/output
     profiles: ["web"]
     # Usage : docker-compose run web_audit <url>
 
@@ -51,7 +50,7 @@ services:
       - NET_RAW
       - NET_ADMIN
     volumes:
-      - toolbox_output:/output
+      - /opt/security-toolbox/output:/output
     profiles: ["network"]
     # Usage : docker-compose run network eth0 300
 
@@ -60,7 +59,7 @@ services:
     build: ./modules/ad_audit
     container_name: toolbox_ad
     volumes:
-      - toolbox_output:/output
+      - /opt/security-toolbox/output:/output
     profiles: ["ad"]
     # Usage : docker-compose run ad_audit <DC_IP> <domain> <user> <pass>
 
@@ -69,6 +68,6 @@ services:
     build: ./modules/reporting
     container_name: toolbox_report
     volumes:
-      - toolbox_output:/output
+      - /opt/security-toolbox/output:/output
     profiles: ["report"]
     # Usage : docker-compose run reporting --target <cible> --output /output/report_final.html
