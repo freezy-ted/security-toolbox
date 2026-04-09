@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<title>Admin — Security Toolbox</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;background:#0f1117;color:#e0e0e0;min-height:100vh;padding:2rem}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:2rem}
+.header h1{font-size:1.2rem;font-weight:500;color:#fff;flex:1}
+.btn-back{font-size:13px;padding:6px 14px;background:#1f2937;color:#9ca3af;border:1px solid #374151;border-radius:6px;cursor:pointer;text-decoration:none}
+.btn-back:hover{color:#e0e0e0}
+.card{background:#111827;border:1px solid #1f2937;border-radius:10px;padding:1.25rem;margin-bottom:1rem}
+.card h2{font-size:.9rem;font-weight:500;color:#e0e0e0;margin-bottom:1rem;padding-bottom:8px;border-bottom:1px solid #1f2937}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #1f2937}
+th{color:#6b7280;font-weight:500}
+.badge-admin{font-size:10px;padding:2px 8px;border-radius:99px;background:#0f6e5620;color:#5DCAA5;border:1px solid #5DCAA540}
+.badge-tech{font-size:10px;padding:2px 8px;border-radius:99px;background:#185fa520;color:#85B7EB;border:1px solid #85B7EB40}
+.btn-edit{font-size:12px;padding:4px 10px;background:#1f2937;color:#9ca3af;border:1px solid #374151;border-radius:6px;cursor:pointer}
+.btn-edit:hover{color:#e0e0e0}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:100}
+.modal.active{display:flex}
+.modal-card{background:#111827;border:1px solid #1f2937;border-radius:12px;padding:1.5rem;width:100%;max-width:360px}
+.modal-card h3{font-size:1rem;font-weight:500;margin-bottom:1rem}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:12px;color:#9ca3af;margin-bottom:5px}
+.field input{width:100%;padding:8px 10px;font-size:13px;background:#1f2937;border:1px solid #374151;border-radius:6px;color:#e0e0e0;outline:none}
+.field input:focus{border-color:#1D9E75}
+.btn-save{padding:8px 16px;font-size:13px;background:#1D9E75;color:white;border:none;border-radius:6px;cursor:pointer}
+.btn-cancel{padding:8px 16px;font-size:13px;background:#1f2937;color:#9ca3af;border:1px solid #374151;border-radius:6px;cursor:pointer;margin-left:8px}
+.success{background:#0f6e5620;border:1px solid #5DCAA540;color:#5DCAA5;font-size:13px;padding:8px 12px;border-radius:6px;margin-bottom:1rem;display:none}
+.error{background:#a32d2d20;border:1px solid #E24B4A40;color:#E24B4A;font-size:13px;padding:8px 12px;border-radius:6px;margin-bottom:1rem;display:none}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚙ Administration</h1>
+  <a href="/" class="btn-back">← Dashboard</a>
+</div>
+
+<div class="card">
+  <h2>Gestion des comptes</h2>
+  <div id="msg-success" class="success"></div>
+  <div id="msg-error" class="error"></div>
+  <table>
+    <thead><tr><th>Utilisateur</th><th>Rôle</th><th>Action</th></tr></thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.username }}</td>
+        <td>
+          {% if user.role == "admin" %}
+            <span class="badge-admin">admin</span>
+          {% else %}
+            <span class="badge-tech">tech</span>
+          {% endif %}
+        </td>
+        <td>
+          <button class="btn-edit" onclick="openModal('{{ user.username }}')">
+            Changer mot de passe
+          </button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal changement mot de passe -->
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <h3>Changer le mot de passe</h3>
+    <p style="font-size:12px;color:#6b7280;margin-bottom:1rem">Utilisateur : <strong id="modal-user" style="color:#e0e0e0"></strong></p>
+    <div class="field">
+      <label>Nouveau mot de passe</label>
+      <input type="password" id="new-pass" placeholder="Nouveau mot de passe"/>
+    </div>
+    <button class="btn-save" onclick="savePassword()">Enregistrer</button>
+    <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+  </div>
+</div>
+
+<script>
+let currentUser = '';
+
+function openModal(username){
+  currentUser = username;
+  document.getElementById('modal-user').textContent = username;
+  document.getElementById('new-pass').value = '';
+  document.getElementById('modal').classList.add('active');
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('active');
+}
+
+async function savePassword(){
+  const pass = document.getElementById('new-pass').value.trim();
+  if(!pass){ alert('Entrez un mot de passe'); return; }
+  try {
+    const r = await fetch('/api/admin/password', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({username: currentUser, password: pass})
+    });
+    const d = await r.json();
+    closeModal();
+    if(d.success){
+      const el = document.getElementById('msg-success');
+      el.textContent = `Mot de passe de ${currentUser} mis à jour !`;
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 3000);
+    } else {
+      const el = document.getElementById('msg-error');
+      el.textContent = d.error || 'Erreur';
+      el.style.display = 'block';
+    }
+  } catch(e) {
+    alert('Erreur réseau');
+  }
+}
+</script>
+</body>
+</html>

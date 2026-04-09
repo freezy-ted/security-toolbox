@@ -17,16 +17,26 @@ OUTPUT_BASE = "/output"
 COMPOSE_FILE = "/opt/security-toolbox/docker-compose.yml"
 running_jobs = {}
 
-# ── Comptes utilisateurs ──────────────────────────────────────
-# admin    : accès complet
-# tech1-4  : accès complet aux modules
+# ── Comptes utilisateurs avec rôles ──────────────────────────
 USERS = {
-    "admin":  hashlib.sha256("Admin2026!".encode()).hexdigest(),
-    "Tech1":  hashlib.sha256("Tech1@2026".encode()).hexdigest(),
-    "Tech2":  hashlib.sha256("Tech2@2026".encode()).hexdigest(),
-    "Tech3":  hashlib.sha256("Tech3@2026".encode()).hexdigest(),
-    "Tech4":  hashlib.sha256("Tech4@2026".encode()).hexdigest(),
+    "admin":  {"password": hashlib.sha256("Admin2026!".encode()).hexdigest(), "role": "admin"},
+    "tech1":  {"password": hashlib.sha256("Tech1@2026".encode()).hexdigest(), "role": "tech"},
+    "tech2":  {"password": hashlib.sha256("Tech2@2026".encode()).hexdigest(), "role": "tech"},
+    "tech3":  {"password": hashlib.sha256("Tech3@2026".encode()).hexdigest(), "role": "tech"},
+    "tech4":  {"password": hashlib.sha256("Tech4@2026".encode()).hexdigest(), "role": "tech"},
 }
+
+# ── Vérification de rôle admin ────────────────────────────────
+def admin_required(f):
+    from functools import wraps
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get("logged_in"):
+            return redirect(url_for("login"))
+        if session.get("role") != "admin":
+            return jsonify({"error": "Accès refusé — admin uniquement"}), 403
+        return f(*args, **kwargs)
+    return decorated
 
 # ── Vérification de session ───────────────────────────────────
 def login_required(f):
@@ -46,9 +56,10 @@ def login():
         username = request.form.get("username","").strip()
         password = request.form.get("password","").strip()
         hashed = hashlib.sha256(password.encode()).hexdigest()
-        if username in USERS and USERS[username] == hashed:
+        if username in USERS and USERS[username]["password"] == hashed:
             session["logged_in"] = True
             session["username"] = username
+            session["role"] = USERS[username]["role"]
             return redirect(url_for("index"))
         error = "Identifiants incorrects"
     return render_template("login.html", error=error)
@@ -202,3 +213,31 @@ def serve_report(filename):
 # ── Démarrage du serveur ──────────────────────────────────────
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)
+# ── Page admin — gestion des comptes ─────────────────────────
+@app.route("/admin")
+@admin_required
+def admin_panel():
+    users = [{"username": u, "role": USERS[u]["role"]} for u in USERS]
+    return render_template("admin.html", users=users)
+
+# ── Admin — changer mot de passe ─────────────────────────────
+@app.route("/api/admin/password", methods=["POST"])
+@admin_required
+def change_password():
+    username = request.json.get("username","").strip()
+    new_pass = request.json.get("password","").strip()
+    if not username or not new_pass:
+        return jsonify({"error": "Paramètres manquants"}), 400
+    if username not in USERS:
+        return jsonify({"error": "Utilisateur inconnu"}), 404
+    USERS[username]["password"] = hashlib.sha256(new_pass.encode()).hexdigest()
+    return jsonify({"success": True})
+
+# ── Admin — infos utilisateur connecté ───────────────────────
+@app.route("/api/me")
+@login_required
+def me():
+    return jsonify({
+        "username": session.get("username"),
+        "role": session.get("role")
+    })

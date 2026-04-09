@@ -84,6 +84,9 @@ header h1{font-size:1.1rem;font-weight:500;color:#fff;flex:1}
 <header>
   <h1>⚙ Security Toolbox</h1>
   <span class="badge" id="global-status">Prêt</span>
+  <a href="/logout" style="font-size:12px;padding:4px 12px;background:#1f2937;color:#E24B4A;border:1px solid #E24B4A40;border-radius:6px;text-decoration:none">
+    Déconnexion
+  </a>
 </header>
 
 <div class="layout">
@@ -97,17 +100,19 @@ header h1{font-size:1.1rem;font-weight:500;color:#fff;flex:1}
     <div class="nav-item" data-page="vuln"    onclick="showPage('vuln',this)">⚑ &nbsp;Vulnérabilités</div>
     <div class="sidebar-section">Résultats</div>
     <div class="nav-item" data-page="reports" onclick="showPage('reports',this)">☰ &nbsp;Rapports</div>
-    <div class="sidebar-footer">Usage autorisé uniquement</div>
-  </div>
-
-  <div class="main">
-    <div class="topbar">
-      <span class="topbar-title" id="page-title">Dashboard</span>
-      <span class="topbar-status" id="topbar-status">Prêt</span>
+    <div class="sidebar-section">Compte</div>
+    <div id="admin-link" style="display:none">
+      <a href="/admin" style="display:flex;align-items:center;gap:10px;padding:9px 1.25rem;font-size:13px;color:#EF9F27;text-decoration:none">⚙ &nbsp;Administration</a>
     </div>
+    <a href="/logout" style="display:flex;align-items:center;gap:10px;padding:9px 1.25rem;font-size:13px;color:#E24B4A;text-decoration:none">✕ &nbsp;Déconnexion</a>
+    <div class="sidebar-footer" id="user-info">Usage autorisé uniquement</div>
+  </div>
 
     <!-- ══════════════════════════════════ DASHBOARD -->
     <div id="page-dashboard" class="page active">
+  <span class="topbar-title" id="page-title">Dashboard</span>
+  <span class="topbar-status" id="topbar-status">Prêt</span>
+    <span id="user-info" style="font-size:12px;color:#6b7280;margin-right:8px"></span>
       <div class="stats-row">
         <div class="stat c-green"><div class="stat-v" id="s-total">0</div><div class="stat-l">Scans lancés</div></div>
         <div class="stat c-blue" ><div class="stat-v" id="s-done">0</div><div class="stat-l">Terminés</div></div>
@@ -265,7 +270,7 @@ header h1{font-size:1.1rem;font-weight:500;color:#fff;flex:1}
   </div>
 </div>
 
-script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const state={total:0,done:0,running:0,errors:0,vulns:{critical:0,high:0,medium:0,low:0},ports:0};
 const pageTitles={dashboard:'Dashboard',recon:'Reconnaissance',web:'Audit Web',network:'Réseau passif',ad:'Active Directory',vuln:'Vulnérabilités',reports:'Rapports'};
@@ -499,6 +504,18 @@ function openReport(path){
   window.open('/reports/' + relative, '_blank');
 }
 
+// ── Affiche le lien admin si rôle admin ───────────────────────
+async function checkRole(){
+  try {
+    const r = await fetch('/api/me');
+    const d = await r.json();
+    if(d.role === 'admin'){
+      document.getElementById('admin-link').style.display = 'block';
+    }
+    document.getElementById('user-info').textContent = d.username + ' (' + d.role + ')';
+  } catch(e) {}
+}
+
 window.addEventListener('load',()=>{
   initCharts();
   // Init progression avec timestamp
@@ -506,6 +523,8 @@ window.addEventListener('load',()=>{
   chartProgress.data.labels.push(now);
   chartProgress.data.datasets[0].data.push(0);
   chartProgress.update();
+  // Vérification du rôle utilisateur
+  checkRole();
 });
 </script>
 </body>
