@@ -23,4 +23,7 @@ RUN chmod +x /toolbox/modules/recon/recon.sh
 
 WORKDIR /toolbox/modules/recon
 
+# Configuration theHarvester avec clé Shodan
+RUN sed -i 's/shodan:/shodan:\n  key: ${SHODAN_API_KEY}/' /etc/theHarvester/api-keys.yaml
+
 ENTRYPOINT ["/toolbox/modules/recon/recon.sh"]

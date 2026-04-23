@@ -19,6 +19,8 @@ services:
     volumes:
       - /opt/security-toolbox/output:/output
       - ./modules:/toolbox/modules:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/security-toolbox:/opt/security-toolbox:ro
     environment:
       - FLASK_ENV=development
     restart: unless-stopped
@@ -29,6 +31,8 @@ services:
     container_name: toolbox_recon
     volumes:
       - /opt/security-toolbox/output:/output
+    env_file:
+      - .env
     profiles: ["recon"]   # Lancé uniquement via : docker-compose --profile recon up
     # Usage : docker-compose run recon <cible>
 

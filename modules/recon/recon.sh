@@ -92,12 +92,13 @@ log "Nmap terminé → nmap_fast.* / nmap_full.*"
 step "4/5 — Shodan"
 
 if [ -n "$SHODAN_API_KEY" ] && command -v shodan &>/dev/null; then
+    log "Configuration Shodan..."
+    shodan init "$SHODAN_API_KEY" 2>/dev/null
     log "Recherche Shodan pour $TARGET..."
     shodan host "$TARGET" > "$OUTPUT/shodan.txt" 2>/dev/null
     log "Shodan terminé → shodan.txt"
 else
-    warn "SHODAN_API_KEY non définie ou shodan non installé — étape ignorée"
-    warn "Définissez SHODAN_API_KEY=votre_clé pour activer"
+    warn "SHODAN_API_KEY non définie — Shodan ignoré"
 fi
 
 # ============================================================
