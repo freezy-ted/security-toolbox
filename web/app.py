@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # ============================================================
 # app.py — Dashboard Flask de la Security Toolbox
-# Avec authentification basique
+# Connecté aux vrais modules Docker
 # Usage autorisé uniquement
 # ============================================================
 
@@ -12,10 +12,14 @@ from datetime import datetime
 
 # ── Configuration ─────────────────────────────────────────────
 app = Flask(__name__)
-app.secret_key = "changez_cette_cle_secrete"
+app.secret_key = "changez_cette_cle_secrete_2026"
 OUTPUT_BASE = "/output"
-COMPOSE_FILE = "/opt/security-toolbox/docker-compose.yml"
 running_jobs = {}
+
+# ── Fichiers statiques ────────────────────────────────────────
+@app.route("/static/<path:filename>")
+def static_files(filename):
+    return send_from_directory("/app/static", filename)
 
 # ── Comptes utilisateurs avec rôles ──────────────────────────
 USERS = {
@@ -26,7 +30,16 @@ USERS = {
     "tech4":  {"password": hashlib.sha256("Tech4@2026".encode()).hexdigest(), "role": "tech"},
 }
 
-# ── Vérification de rôle admin ────────────────────────────────
+# ── Décorateurs de sécurité ───────────────────────────────────
+def login_required(f):
+    from functools import wraps
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get("logged_in"):
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated
+
 def admin_required(f):
     from functools import wraps
     @wraps(f)
@@ -38,15 +51,27 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated
 
-# ── Vérification de session ───────────────────────────────────
-def login_required(f):
-    from functools import wraps
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if not session.get("logged_in"):
-            return redirect(url_for("login"))
-        return f(*args, **kwargs)
-    return decorated
+# ── Lancement d'un job en arrière-plan ────────────────────────
+def run_job(job_id, cmd):
+    running_jobs[job_id] = {
+        "status": "running",
+        "output": [],
+        "started": datetime.now().isoformat()
+    }
+    try:
+        proc = subprocess.Popen(
+            cmd, shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True
+        )
+        for line in proc.stdout:
+            running_jobs[job_id]["output"].append(line.strip())
+        proc.wait()
+        running_jobs[job_id]["status"] = "done" if proc.returncode == 0 else "error"
+    except Exception as e:
+        running_jobs[job_id]["status"] = "error"
+        running_jobs[job_id]["output"].append(str(e))
 
 # ── Page de login ─────────────────────────────────────────────
 @app.route("/login", methods=["GET", "POST"])
@@ -76,14 +101,24 @@ def logout():
 def index():
     return render_template("dashboard_charts.html")
 
+# ── Infos utilisateur connecté ────────────────────────────────
+@app.route("/api/me")
+@login_required
+def me():
+    return jsonify({
+        "username": session.get("username"),
+        "role": session.get("role")
+    })
+
 # ── Module Reconnaissance ─────────────────────────────────────
 @app.route("/api/run/recon", methods=["POST"])
 @login_required
 def run_recon():
     target = request.json.get("target","").strip()
-    if not target: return jsonify({"error": "Cible manquante"}), 400
+    if not target:
+        return jsonify({"error": "Cible manquante"}), 400
     job_id = f"recon_{datetime.now().strftime('%H%M%S')}"
-    cmd = f"docker compose -f {COMPOSE_FILE} run --remove-orphans recon {target}"
+    cmd = f"docker run --rm -v /opt/security-toolbox/output:/output security-toolbox-recon {target}"
     threading.Thread(target=run_job, args=(job_id, cmd), daemon=True).start()
     return jsonify({"job_id": job_id})
 
@@ -92,9 +127,10 @@ def run_recon():
 @login_required
 def run_web():
     target = request.json.get("target","").strip()
-    if not target: return jsonify({"error": "Cible manquante"}), 400
+    if not target:
+        return jsonify({"error": "Cible manquante"}), 400
     job_id = f"web_{datetime.now().strftime('%H%M%S')}"
-    cmd = f"docker compose -f {COMPOSE_FILE} run --remove-orphans web_audit {target}"
+    cmd = f"docker run --rm -v /opt/security-toolbox/output:/output security-toolbox-web_audit {target}"
     threading.Thread(target=run_job, args=(job_id, cmd), daemon=True).start()
     return jsonify({"job_id": job_id})
 
@@ -103,9 +139,10 @@ def run_web():
 @login_required
 def run_vuln():
     target = request.json.get("target","").strip()
-    if not target: return jsonify({"error": "Cible manquante"}), 400
+    if not target:
+        return jsonify({"error": "Cible manquante"}), 400
     job_id = f"vuln_{datetime.now().strftime('%H%M%S')}"
-    cmd = f"docker compose -f {COMPOSE_FILE} run --remove-orphans vuln {target}"
+    cmd = f"docker run --rm -v /opt/security-toolbox/output:/output security-toolbox-vuln {target}"
     threading.Thread(target=run_job, args=(job_id, cmd), daemon=True).start()
     return jsonify({"job_id": job_id})
 
@@ -115,9 +152,10 @@ def run_vuln():
 def run_osint():
     target = request.json.get("target","").strip()
     type_ = request.json.get("type","domain")
-    if not target: return jsonify({"error": "Cible manquante"}), 400
+    if not target:
+        return jsonify({"error": "Cible manquante"}), 400
     job_id = f"osint_{datetime.now().strftime('%H%M%S')}"
-    cmd = f"docker compose -f {COMPOSE_FILE} run --remove-orphans osint {target} {type_}"
+    cmd = f"docker run --rm -v /opt/security-toolbox/output:/output security-toolbox-osint {target} {type_}"
     threading.Thread(target=run_job, args=(job_id, cmd), daemon=True).start()
     return jsonify({"job_id": job_id})
 
@@ -128,7 +166,7 @@ def run_network():
     iface = request.json.get("interface","eth0")
     duration = request.json.get("duration", 300)
     job_id = f"network_{datetime.now().strftime('%H%M%S')}"
-    cmd = f"docker compose -f {COMPOSE_FILE} run --remove-orphans network {iface} {duration}"
+    cmd = f"docker run --rm --network host --cap-add NET_RAW --cap-add NET_ADMIN -v /opt/security-toolbox/output:/output security-toolbox-network {iface} {duration}"
     threading.Thread(target=run_job, args=(job_id, cmd), daemon=True).start()
     return jsonify({"job_id": job_id})
 
@@ -144,7 +182,7 @@ def run_ad():
     if not all([dc, dom, user, pwd]):
         return jsonify({"error": "Paramètres incomplets"}), 400
     job_id = f"ad_{datetime.now().strftime('%H%M%S')}"
-    cmd = f"docker compose -f {COMPOSE_FILE} run --remove-orphans ad_audit {dc} {dom} {user} {pwd}"
+    cmd = f"docker run --rm -v /opt/security-toolbox/output:/output security-toolbox-ad_audit {dc} {dom} {user} {pwd}"
     threading.Thread(target=run_job, args=(job_id, cmd), daemon=True).start()
     return jsonify({"job_id": job_id})
 
@@ -153,41 +191,21 @@ def run_ad():
 @login_required
 def run_report():
     target = request.json.get("target","").strip()
-    if not target: return jsonify({"error": "Cible manquante"}), 400
+    if not target:
+        return jsonify({"error": "Cible manquante"}), 400
     out = f"/output/reports/report_{target}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
     job_id = f"report_{datetime.now().strftime('%H%M%S')}"
-    cmd = f"docker compose -f {COMPOSE_FILE} run --remove-orphans reporting --target {target} --output {out}"
+    cmd = f"docker run --rm -v /opt/security-toolbox/output:/output security-toolbox-reporting --target {target} --output {out}"
     threading.Thread(target=run_job, args=(job_id, cmd), daemon=True).start()
     return jsonify({"job_id": job_id, "output_file": out})
-
-# ── Lancement d'un job en arrière-plan ────────────────────────
-def run_job(job_id, cmd):
-    running_jobs[job_id] = {
-        "status": "running",
-        "output": [],
-        "started": datetime.now().isoformat()
-    }
-    try:
-        proc = subprocess.Popen(
-            cmd, shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True
-        )
-        for line in proc.stdout:
-            running_jobs[job_id]["output"].append(line.strip())
-        proc.wait()
-        running_jobs[job_id]["status"] = "done" if proc.returncode == 0 else "error"
-    except Exception as e:
-        running_jobs[job_id]["status"] = "error"
-        running_jobs[job_id]["output"].append(str(e))
 
 # ── Statut d'un job en cours ──────────────────────────────────
 @app.route("/api/job/<job_id>")
 @login_required
 def job_status(job_id):
     job = running_jobs.get(job_id)
-    if not job: return jsonify({"error": "Job inconnu"}), 404
+    if not job:
+        return jsonify({"error": "Job inconnu"}), 404
     return jsonify(job)
 
 # ── Liste des rapports disponibles ───────────────────────────
@@ -210,9 +228,6 @@ def list_reports():
 def serve_report(filename):
     return send_from_directory(OUTPUT_BASE, filename)
 
-# ── Démarrage du serveur ──────────────────────────────────────
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False)
 # ── Page admin — gestion des comptes ─────────────────────────
 @app.route("/admin")
 @admin_required
@@ -233,11 +248,6 @@ def change_password():
     USERS[username]["password"] = hashlib.sha256(new_pass.encode()).hexdigest()
     return jsonify({"success": True})
 
-# ── Admin — infos utilisateur connecté ───────────────────────
-@app.route("/api/me")
-@login_required
-def me():
-    return jsonify({
-        "username": session.get("username"),
-        "role": session.get("role")
-    })
+# ── Démarrage du serveur ──────────────────────────────────────
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=False)

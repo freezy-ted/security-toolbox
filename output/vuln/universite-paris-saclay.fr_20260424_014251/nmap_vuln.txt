@@ -1,0 +1,53 @@
+# Nmap 7.98 scan initiated Fri Apr 24 01:42:54 2026 as: /usr/lib/nmap/nmap -sV --script vuln -oN /output/vuln/universite-paris-saclay.fr_20260424_014251/nmap_vuln.txt universite-paris-saclay.fr
+Nmap scan report for universite-paris-saclay.fr (129.175.212.146)
+Host is up (0.0021s latency).
+rDNS record for 129.175.212.146: www.universite-paris-saclay.fr
+Not shown: 998 filtered tcp ports (no-response)
+PORT    STATE SERVICE  VERSION
+80/tcp  open  http     lighttpd
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+|_http-server-header: Lighttpd
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+|_http-aspnet-debug: ERROR: Script execution failed (use -d to debug)
+| http-slowloris-check: 
+|   VULNERABLE:
+|   Slowloris DOS attack
+|     State: LIKELY VULNERABLE
+|     IDs:  CVE:CVE-2007-6750
+|       Slowloris tries to keep many connections to the target web server open and hold
+|       them open as long as possible.  It accomplishes this by opening connections to
+|       the target web server and sending a partial request. By doing so, it starves
+|       the http server's resources causing Denial Of Service.
+|       
+|     Disclosure date: 2009-09-17
+|     References:
+|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-6750
+|_      http://ha.ckers.org/slowloris/
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+443/tcp open  ssl/http lighttpd
+|_http-server-header: Lighttpd
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+|_http-vuln-cve2014-3704: ERROR: Script execution failed (use -d to debug)
+| ssl-dh-params: 
+|   VULNERABLE:
+|   Diffie-Hellman Key Exchange Insufficient Group Strength
+|     State: VULNERABLE
+|       Transport Layer Security (TLS) services that use Diffie-Hellman groups
+|       of insufficient strength, especially those using one of a few commonly
+|       shared groups, may be susceptible to passive eavesdropping attacks.
+|     Check results:
+|       WEAK DH GROUP 1
+|             Cipher Suite: TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+|             Modulus Type: Non-safe prime
+|             Modulus Source: RFC5114/1024-bit DSA group with 160-bit prime order subgroup
+|             Modulus Length: 1024
+|             Generator Length: 1024
+|             Public Key Length: 1024
+|     References:
+|_      https://weakdh.org
+|_http-aspnet-debug: ERROR: Script execution failed (use -d to debug)
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Fri Apr 24 01:44:42 2026 -- 1 IP address (1 host up) scanned in 107.78 seconds

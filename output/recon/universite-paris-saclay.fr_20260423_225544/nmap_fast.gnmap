@@ -1,0 +1,4 @@
+# Nmap 7.99 scan initiated Thu Apr 23 22:56:49 2026 as: /usr/lib/nmap/nmap -sV -sC --open -T4 -oA /output/recon/universite-paris-saclay.fr_20260423_225544/nmap_fast universite-paris-saclay.fr
+Host: 129.175.212.146 (www.universite-paris-saclay.fr)	Status: Up
+Host: 129.175.212.146 (www.universite-paris-saclay.fr)	Ports: 80/open/tcp//http?///, 443/open/tcp//ssl|https?///	Ignored State: filtered (998)
+# Nmap done at Thu Apr 23 22:58:39 2026 -- 1 IP address (1 host up) scanned in 109.86 seconds

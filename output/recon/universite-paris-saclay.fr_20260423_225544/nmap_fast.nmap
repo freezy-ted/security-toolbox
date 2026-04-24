@@ -1,0 +1,21 @@
+# Nmap 7.99 scan initiated Thu Apr 23 22:56:49 2026 as: /usr/lib/nmap/nmap -sV -sC --open -T4 -oA /output/recon/universite-paris-saclay.fr_20260423_225544/nmap_fast universite-paris-saclay.fr
+Nmap scan report for universite-paris-saclay.fr (129.175.212.146)
+Host is up (0.0062s latency).
+rDNS record for 129.175.212.146: www.universite-paris-saclay.fr
+Not shown: 998 filtered tcp ports (no-response)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT    STATE SERVICE    VERSION
+80/tcp  open  http?
+|_http-title: Did not follow redirect to https://universite-paris-saclay.fr/
+443/tcp open  ssl/https?
+| tls-alpn: 
+|   http/1.1
+|_  h2
+| ssl-cert: Subject: commonName=www.universite-paris-saclay.fr/organizationName=UNIVERSITE PARIS-SACLAY/stateOrProvinceName=\xC3\x8Ele-de-France/countryName=FR
+| Subject Alternative Name: DNS:www.universite-paris-saclay.fr, DNS:universite-paris-saclay.fr
+| Not valid before: 2026-03-17T11:00:02
+|_Not valid after:  2026-10-02T11:00:01
+|_ssl-date: TLS randomness does not represent time
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Thu Apr 23 22:58:39 2026 -- 1 IP address (1 host up) scanned in 109.86 seconds

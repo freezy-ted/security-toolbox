@@ -1,0 +1,24 @@
+# Nmap 7.99 scan initiated Thu Apr 23 23:48:41 2026 as: /usr/lib/nmap/nmap -sV -sC --open -T4 -oA /output/recon/universite-paris-saclay.fr_20260423_234636/nmap_fast universite-paris-saclay.fr
+Nmap scan report for universite-paris-saclay.fr (129.175.212.146)
+Host is up (0.0026s latency).
+rDNS record for 129.175.212.146: www.universite-paris-saclay.fr
+Not shown: 998 filtered tcp ports (no-response)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT    STATE SERVICE  VERSION
+80/tcp  open  http     lighttpd
+|_http-title: Did not follow redirect to https://mabbox.bytel.fr:443/intercept.html
+|_http-server-header: Lighttpd
+443/tcp open  ssl/http lighttpd
+|_ssl-date: TLS randomness does not represent time
+|_http-title: Did not follow redirect to https://mabbox.bytel.fr:443/intercept.html
+| ssl-cert: Subject: commonName=mabbox.bytel.fr/organizationName=Bouygues Telecom SA/countryName=FR
+| Subject Alternative Name: DNS:mabbox.bytel.fr
+| Not valid before: 2026-01-19T00:00:00
+|_Not valid after:  2027-01-19T23:59:59
+|_http-server-header: Lighttpd
+| tls-alpn: 
+|   http/1.0
+|_  http/1.1
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Thu Apr 23 23:49:09 2026 -- 1 IP address (1 host up) scanned in 28.23 seconds

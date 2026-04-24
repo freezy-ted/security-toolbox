@@ -270,7 +270,7 @@ header h1{font-size:1.1rem;font-weight:500;color:#fff;flex:1}
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="/static/chart.umd.js"></script>
 <script>
 const state={total:0,done:0,running:0,errors:0,vulns:{critical:0,high:0,medium:0,low:0},ports:0};
 const pageTitles={dashboard:'Dashboard',recon:'Reconnaissance',web:'Audit Web',network:'Réseau passif',ad:'Active Directory',vuln:'Vulnérabilités',reports:'Rapports'};
@@ -389,7 +389,7 @@ function showPage(p,el){
   document.getElementById('page-title').textContent=pageTitles[p]||p;
   if(el)el.classList.add('active');
   else{const ni=document.querySelector(`.nav-item[data-page="${p}"]`);if(ni)ni.classList.add('active');}
-  if(p==='reports')refreshReports();
+  if(p==='reports') setTimeout(()=>refreshReports(), 300);
 }
 
 // ── Terminal ──
@@ -432,44 +432,101 @@ const cmds={
 };
 
 async function launchModule(mod){
-  const tgt={recon:document.getElementById('recon-target')?.value.trim(),
-    web:document.getElementById('web-target')?.value.trim(),
+  const tgt={
+    recon:  document.getElementById('recon-target')?.value.trim(),
+    web:    document.getElementById('web-target')?.value.trim(),
     network:document.getElementById('net-iface')?.value.trim()||'eth0',
-    ad:document.getElementById('ad-dc')?.value.trim(),
-    vuln:document.getElementById('vuln-target')?.value.trim()};
-  const t=tgt[mod];
+    ad:     document.getElementById('ad-dc')?.value.trim(),
+    vuln:   document.getElementById('vuln-target')?.value.trim()
+  };
+  const t = tgt[mod];
   if(['recon','web','vuln'].includes(mod)&&!t){alert('Entrez une cible.');return;}
   if(mod==='ad'){
-    if(!t||!document.getElementById('ad-domain')?.value||!document.getElementById('ad-user')?.value||!document.getElementById('ad-pass')?.value){alert('Tous les champs sont requis.');return;}
+    if(!t||!document.getElementById('ad-domain')?.value||
+       !document.getElementById('ad-user')?.value||
+       !document.getElementById('ad-pass')?.value){
+      alert('Tous les champs sont requis.');return;
+    }
   }
-  const termId='t-'+mod;
+
+  const termId = 't-'+mod;
   document.getElementById(termId).innerHTML='';
   document.getElementById('btn-'+mod).disabled=true;
   state.total++;state.running++;updateStats();
   setMod(mod,'running','En cours...');setProgress(mod,0);
   const label=mod==='network'?(document.getElementById('net-iface')?.value||'eth0'):t;
   log(termId,`=== ${mod.toUpperCase()} — cible : ${label} ===`,'t-amber');
-  const lines=cmds[mod];
-  for(let i=0;i<lines.length;i++){
-    await new Promise(r=>setTimeout(r,380+Math.random()*300));
-    const l=lines[i].replace(/\$T/g,label);
-    const cls=l.startsWith('[+]')?'t-green':l.startsWith('[*]')?'t-amber':l.startsWith('[x]')?'t-red':'t-gray';
-    log(termId,l,cls);
-    setProgress(mod,Math.round(((i+1)/lines.length)*100));
+
+  // ── Construction du body selon le module ──
+  let body = {};
+  if(mod==='recon')   body = {target: t};
+  if(mod==='web')     body = {target: t};
+  if(mod==='vuln')    body = {target: t};
+  if(mod==='osint')   body = {target: t, type: 'domain'};
+  if(mod==='network') body = {interface: document.getElementById('net-iface')?.value||'eth0',
+                               duration: parseInt(document.getElementById('net-duration')?.value)||300};
+  if(mod==='ad')      body = {
+    dc_ip:    document.getElementById('ad-dc')?.value.trim(),
+    domain:   document.getElementById('ad-domain')?.value.trim(),
+    user:     document.getElementById('ad-user')?.value.trim(),
+    password: document.getElementById('ad-pass')?.value.trim()
+  };
+
+  try {
+    // ── Appel API réel ──
+    const r = await fetch(`/api/run/${mod}`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if(d.error){ log(termId,'[x] '+d.error,'t-red'); return; }
+
+    log(termId,'[*] Job lancé — ID : '+d.job_id,'t-amber');
+
+    // ── Polling du job ──
+    let lastLen = 0;
+    const iv = setInterval(async()=>{
+      try {
+        const jr = await fetch('/api/job/'+d.job_id);
+        const jd = await jr.json();
+        const lines = jd.output||[];
+        for(let i=lastLen;i<lines.length;i++){
+          const l=lines[i];
+          const cls=l.startsWith('[+]')?'t-green':l.startsWith('[*]')?'t-amber':l.startsWith('[x]')?'t-red':'t-gray';
+          log(termId,l,cls);
+        }
+        lastLen=lines.length;
+        if(jd.status==='done'||jd.status==='error'){
+          clearInterval(iv);
+          const ok=jd.status==='done';
+          log(termId,ok?'[+] Scan terminé !':'[x] Scan terminé avec erreurs',ok?'t-green':'t-red');
+          state.running--;state.done++;
+          updateStats();
+          setMod(mod,ok?'done':'error',ok?'Terminé':'Erreur');
+          document.getElementById('btn-'+mod).disabled=false;
+          document.getElementById('global-status').textContent=`${state.done} terminé(s)`;
+          updateCharts();
+          // Rafraîchit les rapports
+          setTimeout(()=>refreshReports(),2000);
+        }
+        setProgress(mod,Math.round((lastLen/Math.max(lastLen,10))*100));
+      } catch(e){ clearInterval(iv); }
+    },1500);
+
+  } catch(e){
+    log(termId,'[x] Erreur réseau : '+e.message,'t-red');
+    document.getElementById('btn-'+mod).disabled=false;
+    state.running--;updateStats();
   }
-  state.running--;state.done++;
-  if(mod==='vuln'){state.vulns.critical+=3;state.vulns.high+=5;state.vulns.medium+=4;state.vulns.low+=2;}
-  updateStats();setMod(mod,'done','Terminé');
-  document.getElementById('btn-'+mod).disabled=false;
-  document.getElementById('global-status').textContent=`${state.done} terminé(s)`;
-  simReports.unshift({name:`report_${mod}_${label}_${Date.now()}.html`,mod,label,date:new Date().toLocaleString('fr-FR'),size:Math.floor(Math.random()*80+20)});
-  if(document.getElementById('page-reports').classList.contains('active'))refreshReports();
 }
 
 async function refreshReports(){
+  await new Promise(r=>setTimeout(r,100));
   const list = document.getElementById('reports-list');
+  if(!list){ console.log('reports-list introuvable'); return; }
   list.innerHTML = '<span style="font-size:13px;color:#6b7280">Chargement...</span>';
-  try {
+try {
     const r = await fetch('/api/reports');
     const reports = await r.json();
     if(!reports.length){
@@ -477,22 +534,15 @@ async function refreshReports(){
       return;
     }
     const mc={recon:'#5DCAA5',web:'#85B7EB',network:'#EF9F27',ad:'#AFA9EC',vuln:'#E24B4A',osint:'#5DCAA5'};
-    list.innerHTML = reports.map(r => {
-      const mod = Object.keys(mc).find(m => r.name.includes(m)) || 'other';
-      return `
-        <div class="report-item">
-          <div style="flex:1">
-            <span style="font-size:11px;padding:2px 8px;border-radius:99px;background:#1f2937;color:${mc[mod]||'#9ca3af'};margin-right:6px">${mod}</span>
-            <span style="font-size:13px;color:#e0e0e0">${r.name}</span>
-            <div class="report-meta">${r.date} — ${Math.round(r.size/1024)} Ko</div>
-          </div>
-          <div style="display:flex;gap:6px">
-            <button class="btn-sm" onclick="openReport('${r.path}')">Ouvrir</button>
-          </div>
-        </div>`;
+    const html = reports.map(r => {
+      const mod = Object.keys(mc).find(m => r.path.includes('/'+m+'/')) || 'other';
+      const displayName = r.path.replace('/output/','').replace('/report.html','');
+      return `<div class="report-item"><div style="flex:1"><span style="font-size:11px;padding:2px 8px;border-radius:99px;background:#1f2937;color:${mc[mod]||'#9ca3af'};margin-right:6px">${mod}</span><span style="font-size:13px;color:#e0e0e0">${displayName}</span><div class="report-meta">${r.date} — ${Math.round(r.size/1024)} Ko</div></div><div style="display:flex;gap:6px"><button class="btn-sm" onclick="openReport('${r.path}')">Ouvrir</button></div></div>`;
     }).join('');
+    list.innerHTML = html;
     document.getElementById('s-reports').textContent = reports.length;
   } catch(e) {
+    console.log('ERREUR refreshReports:', e.message);
     list.innerHTML='<span style="color:#E24B4A;font-size:13px">Erreur de chargement</span>';
   }
 }
@@ -517,13 +567,16 @@ async function checkRole(){
 }
 
 window.addEventListener('load',()=>{
-  initCharts();
-  // Init progression avec timestamp
-  const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-  chartProgress.data.labels.push(now);
-  chartProgress.data.datasets[0].data.push(0);
-  chartProgress.update();
-  // Vérification du rôle utilisateur
+  // Attendre que Chart.js soit bien chargé
+  if(typeof Chart === 'undefined'){
+    console.warn('Chart.js non chargé, graphiques désactivés');
+  } else {
+    initCharts();
+    const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    chartProgress.data.labels.push(now);
+    chartProgress.data.datasets[0].data.push(0);
+    chartProgress.update();
+  }
   checkRole();
 });
 </script>

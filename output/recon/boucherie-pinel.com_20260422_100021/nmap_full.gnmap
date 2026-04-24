@@ -1,1 +1,0 @@
-# Nmap 7.99 scan initiated Wed Apr 22 10:02:04 2026 as: /usr/lib/nmap/nmap -sV -p- --open -T4 -oA /output/recon/boucherie-pinel.com_20260422_100021/nmap_full boucherie-pinel.com
