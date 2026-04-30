@@ -522,11 +522,11 @@ async function launchModule(mod){
 }
 
 async function refreshReports(){
-  await new Promise(r=>setTimeout(r,100));
+  await new Promise(res=>setTimeout(res,100));
   const list = document.getElementById('reports-list');
   if(!list){ console.log('reports-list introuvable'); return; }
   list.innerHTML = '<span style="font-size:13px;color:#6b7280">Chargement...</span>';
-try {
+  try {
     const r = await fetch('/api/reports');
     const reports = await r.json();
     if(!reports.length){
@@ -534,21 +534,24 @@ try {
       return;
     }
     const mc={recon:'#5DCAA5',web:'#85B7EB',network:'#EF9F27',ad:'#AFA9EC',vuln:'#E24B4A',osint:'#5DCAA5'};
-    const html = reports.map(r => {
-      const mod = Object.keys(mc).find(m => r.path.includes('/'+m+'/')) || 'other';
-      const displayName = r.path.replace('/output/','').replace('/report.html','');
-      return `<div class="report-item"><div style="flex:1"><span style="font-size:11px;padding:2px 8px;border-radius:99px;background:#1f2937;color:${mc[mod]||'#9ca3af'};margin-right:6px">${mod}</span><span style="font-size:13px;color:#e0e0e0">${displayName}</span><div class="report-meta">${r.date} — ${Math.round(r.size/1024)} Ko</div></div><div style="display:flex;gap:6px"><button class="btn-sm" onclick="openReport('${r.path}')">Ouvrir</button></div></div>`;
+    const html = reports.map(rep => {
+      const mod = Object.keys(mc).find(m => rep.path.includes('/'+m+'/')) || 'other';
+      const relativePath = rep.path.replace('/output/','');
+      const displayName = relativePath.replace('/report.html','');
+      return '<div class="report-item"><div style="flex:1">'
+        + '<span style="font-size:11px;padding:2px 8px;border-radius:99px;background:#1f2937;color:'+(mc[mod]||'#9ca3af')+';margin-right:6px">'+mod+'</span>'
+        + '<a href="/reports/'+relativePath+'" target="_blank" style="font-size:13px;color:#85B7EB">'+displayName+'</a>'
+        + '<div class="report-meta">'+rep.date+' - '+parseFloat(rep.size/1024).toFixed(1)+' Ko</div>'
+        + '</div></div>';
     }).join('');
     list.innerHTML = html;
-    document.getElementById('s-reports').textContent = reports.length;
+    const sr = document.getElementById('s-reports'); if(sr) sr.textContent = reports.length;
   } catch(e) {
     console.log('ERREUR refreshReports:', e.message);
-    list.innerHTML='<span style="color:#E24B4A;font-size:13px">Erreur de chargement</span>';
+if(list) list.innerHTML='<span style="color:#E24B4A;font-size:13px">Erreur de chargement</span>';
   }
 }
-
 async function loadReports(){ refreshReports(); }
-
 function openReport(path){
   const relative = path.replace('/output/','');
   window.open('/reports/' + relative, '_blank');

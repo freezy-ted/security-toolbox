@@ -1,0 +1,4 @@
+# Nmap 7.99 scan initiated Mon Apr 27 13:15:09 2026 as: /usr/lib/nmap/nmap -sV -p- --open -T4 -oA /output/recon/http://www.testingmcafeesites.com/index.html_20260427_131423/nmap_full http://www.testingmcafeesites.com/index.html
+Unable to split netmask from target expression: "http://www.testingmcafeesites.com/index.html"
+WARNING: No targets were specified, so 0 hosts scanned.
+# Nmap done at Mon Apr 27 13:15:09 2026 -- 0 IP addresses (0 hosts up) scanned in 0.13 seconds

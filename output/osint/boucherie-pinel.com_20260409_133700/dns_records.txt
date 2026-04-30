@@ -1,2 +1,0 @@
-boucherie-pinel.com.	5	IN	MX	10 mx.axecibles.com.
-boucherie-pinel.com.	5	IN	TXT	"v=spf1 a mx include:_spf.axecibles.com -all"

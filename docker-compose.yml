@@ -21,6 +21,8 @@ services:
       - ./modules:/toolbox/modules:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - /opt/security-toolbox:/opt/security-toolbox:ro
+      - ./web/templates:/app/templates
+      - ./web/static:/app/static
     environment:
       - FLASK_ENV=development
     restart: unless-stopped
