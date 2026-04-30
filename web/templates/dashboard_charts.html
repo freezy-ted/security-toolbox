@@ -545,10 +545,10 @@ async function refreshReports(){
         + '</div></div>';
     }).join('');
     list.innerHTML = html;
-    document.getElementById('s-reports').textContent = reports.length;
+    const sr = document.getElementById('s-reports'); if(sr) sr.textContent = reports.length;
   } catch(e) {
     console.log('ERREUR refreshReports:', e.message);
-    list.innerHTML='<span style="color:#E24B4A;font-size:13px">Erreur de chargement</span>';
+if(list) list.innerHTML='<span style="color:#E24B4A;font-size:13px">Erreur de chargement</span>';
   }
 }
 async function loadReports(){ refreshReports(); }
