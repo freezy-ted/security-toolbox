@@ -1,0 +1,48 @@
+# Nmap 7.99 scan initiated Tue May 12 09:50:44 2026 as: /usr/lib/nmap/nmap -sV -sC --open -T4 -oA /output/recon/getvesto.vercel.app_20260512_095013/nmap_fast getvesto.vercel.app
+Nmap scan report for getvesto.vercel.app (216.198.79.67)
+Host is up (0.0026s latency).
+Other addresses for getvesto.vercel.app (not scanned): 64.29.17.67
+Not shown: 998 filtered tcp ports (no-response)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT    STATE SERVICE  VERSION
+80/tcp  open  http     Vercel
+|_http-server-header: Vercel
+|_http-title: Site doesn't have a title (text/plain).
+| fingerprint-strings: 
+|   FourOhFourRequest: 
+|     HTTP/1.0 308 Permanent Redirect
+|     Content-Type: text/plain
+|     Location: https:///nice%20ports%2C/Tri%6Eity.txt%2ebak
+|     Refresh: 0;url=https:///nice%20ports%2C/Tri%6Eity.txt%2ebak
+|     server: Vercel
+|     Redirecting...
+|   GetRequest, HTTPOptions: 
+|     HTTP/1.0 308 Permanent Redirect
+|     Content-Type: text/plain
+|     Location: https:///
+|     Refresh: 0;url=https:///
+|     server: Vercel
+|_    Redirecting...
+443/tcp open  ssl/http Golang net/http server
+|_ssl-date: TLS randomness does not represent time
+|_http-server-header: Vercel
+|_http-title: Site doesn't have a title (text/plain).
+| ssl-cert: Subject: commonName=*.vercel.app
+| Subject Alternative Name: DNS:*.vercel.app, DNS:vercel.app
+| Not valid before: 2026-04-28T02:04:43
+|_Not valid after:  2026-07-27T02:04:42
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port80-TCP:V=7.99%I=7%D=5/12%Time=6A02F82A%P=x86_64-pc-linux-gnu%r(GetR
+SF:equest,8A,"HTTP/1\.0\x20308\x20Permanent\x20Redirect\r\nContent-Type:\x
+SF:20text/plain\r\nLocation:\x20https:///\r\nRefresh:\x200;url=https:///\r
+SF:\nserver:\x20Vercel\r\n\r\nRedirecting\.\.\.")%r(HTTPOptions,8A,"HTTP/1
+SF:\.0\x20308\x20Permanent\x20Redirect\r\nContent-Type:\x20text/plain\r\nL
+SF:ocation:\x20https:///\r\nRefresh:\x200;url=https:///\r\nserver:\x20Verc
+SF:el\r\n\r\nRedirecting\.\.\.")%r(FourOhFourRequest,D0,"HTTP/1\.0\x20308\
+SF:x20Permanent\x20Redirect\r\nContent-Type:\x20text/plain\r\nLocation:\x2
+SF:0https:///nice%20ports%2C/Tri%6Eity\.txt%2ebak\r\nRefresh:\x200;url=htt
+SF:ps:///nice%20ports%2C/Tri%6Eity\.txt%2ebak\r\nserver:\x20Vercel\r\n\r\n
+SF:Redirecting\.\.\.");
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Tue May 12 09:53:05 2026 -- 1 IP address (1 host up) scanned in 140.97 seconds

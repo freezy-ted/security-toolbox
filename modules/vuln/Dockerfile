@@ -3,19 +3,10 @@ FROM kalilinux/kali-rolling
 RUN apt update && apt install -y \
     nmap \
     python3 \
-    curl \
-    unzip \
     git \
+    nuclei \
     && apt clean
 
-# Nuclei — dernière version
-RUN curl -sL https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei_linux_amd64.zip \
-    -o /tmp/nuclei.zip && \
-    unzip /tmp/nuclei.zip -d /usr/local/bin/ && \
-    chmod +x /usr/local/bin/nuclei && \
-    rm /tmp/nuclei.zip
-
-# Téléchargement des templates Nuclei
 RUN nuclei -update-templates -silent 2>/dev/null || true
 
 RUN mkdir -p /output/vuln /toolbox/modules/vuln
@@ -27,5 +18,4 @@ RUN chmod +x /toolbox/modules/vuln/vuln.sh
 
 WORKDIR /toolbox/modules/vuln
 
-# Usage : docker-compose run vuln example.com
 ENTRYPOINT ["/toolbox/modules/vuln/vuln.sh"]

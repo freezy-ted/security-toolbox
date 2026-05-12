@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.99 scan initiated Tue May 12 09:53:05 2026 as: /usr/lib/nmap/nmap -sV -p- -&#45;open -T4 -oA /output/recon/getvesto.vercel.app_20260512_095013/nmap_full getvesto.vercel.app -->
+<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -sV -p- -&#45;open -T4 -oA /output/recon/getvesto.vercel.app_20260512_095013/nmap_full getvesto.vercel.app" start="1778579585" startstr="Tue May 12 09:53:05 2026" version="7.99" xmloutputversion="1.05">
+<scaninfo type="syn" protocol="tcp" numservices="65535" services="1-65535"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="unknown-response" reason_ttl="0"/>
+<address addr="64.29.17.67" addrtype="ipv4"/>
+<hostnames>
+<hostname name="getvesto.vercel.app" type="user"/>
+</hostnames>
+</hosthint>

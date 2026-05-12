@@ -248,6 +248,55 @@ def change_password():
     USERS[username]["password"] = hashlib.sha256(new_pass.encode()).hexdigest()
     return jsonify({"success": True})
 
+# ── Statistiques des vulnérabilités ──────────────────────────
+@app.route("/api/stats")
+@login_required
+def get_stats():
+    import re
+    stats = {
+        "vulns": {"critical": 0, "high": 0, "medium": 0, "low": 0},
+        "ports": {},
+        "modules": {"recon": 0, "web": 0, "network": 0, "ad": 0, "vuln": 0, "osint": 0}
+    }
+
+    # ── Analyse Nikto (audit web) ─────────────────────────────
+    for f in glob.glob(f"{OUTPUT_BASE}/web/**/nikto.txt", recursive=True):
+        content = open(f, errors="ignore").read()
+        for line in content.splitlines():
+            if line.startswith("+ "):
+                if "OSVDB" in line or "CVE" in line:
+                    stats["vulns"]["high"] += 1
+                elif "XSS" in line or "injection" in line.lower():
+                    stats["vulns"]["critical"] += 1
+                elif "missing" in line.lower() or "header" in line.lower():
+                    stats["vulns"]["low"] += 1
+                else:
+                    stats["vulns"]["medium"] += 1
+
+    # ── Analyse Nuclei (vulnérabilités) ──────────────────────
+    for f in glob.glob(f"{OUTPUT_BASE}/vuln/**/nuclei*.txt", recursive=True):
+        content = open(f, errors="ignore").read()
+        stats["vulns"]["critical"] += content.lower().count("[critical]")
+        stats["vulns"]["high"]     += content.lower().count("[high]")
+        stats["vulns"]["medium"]   += content.lower().count("[medium]")
+        stats["vulns"]["low"]      += content.lower().count("[low]")
+
+    # ── Analyse Nmap (ports) ──────────────────────────────────
+    for f in glob.glob(f"{OUTPUT_BASE}/recon/**/nmap_fast.nmap", recursive=True):
+        content = open(f, errors="ignore").read()
+        for line in content.splitlines():
+            if "/open/" in line:
+                port = line.split("/")[0].strip()
+                stats["ports"][port] = stats["ports"].get(port, 0) + 1
+
+    # ── Modules exécutés ─────────────────────────────────────
+    for mod in stats["modules"]:
+        path = f"{OUTPUT_BASE}/{mod if mod != 'web' else 'web'}"
+        if glob.glob(f"{path}/**/report.html", recursive=True):
+            stats["modules"][mod] = 1
+
+    return jsonify(stats)
+
 # ── Démarrage du serveur ──────────────────────────────────────
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)

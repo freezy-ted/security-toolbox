@@ -1,0 +1,21 @@
+- Nikto v2.6.0/
++ Target Host: getvesto.vercel.app
++ Target Port: 443
++ GET /: Retrieved access-control-allow-origin header: *.
++ GET /: Uncommon header(s) 'content-disposition' found, with contents: inline.
++ GET /: Uncommon header(s) 'x-vercel-enable-rewrite-caching' found, with contents: 1.
++ GET /: Uncommon header(s) 'x-vercel-cache' found, with contents: HIT.
++ GET /: Uncommon header(s) 'x-vercel-id' found, with contents: cdg1::skbpx-1778164696951-b7b129a5f988.
++ GET /server-status: IP address found in the 'x-vercel-id' header. The IP is "1::77". See: https://portswigger.net/kb/issues/00600300_private-ip-addresses-disclosed: 
++ GET /server-status: Uncommon header(s) 'x-vercel-error' found, with contents: NOT_FOUND.
++ SSL Info:           Subject:  /CN=*.vercel.app
+                      CN:       *.vercel.app
+                      SAN:      *.vercel.app, vercel.app
+                      Ciphers:  TLS_AES_128_GCM_SHA256
+                      Issuer:   /C=US/O=Google Trust Services/CN=WR1
++ GET /cgi-bin/: Uncommon header(s) 'x-vercel-mitigated' found, with contents: deny.
++ GET /: Server is using a wildcard certificate: *.vercel.app. See: https://en.wikipedia.org/wiki/Wildcard_certificate: 
++ GET /: Suggested security header missing: x-content-type-options. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options: 
++ GET /: Suggested security header missing: permissions-policy. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permissions-Policy: 
++ GET /: Suggested security header missing: referrer-policy. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy: 
++ GET /: Suggested security header missing: content-security-policy. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP: 

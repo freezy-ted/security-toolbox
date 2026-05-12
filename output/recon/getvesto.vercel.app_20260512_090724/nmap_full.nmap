@@ -1,0 +1,57 @@
+# Nmap 7.99 scan initiated Tue May 12 09:10:11 2026 as: /usr/lib/nmap/nmap -sV -p- --open -T4 -oA /output/recon/getvesto.vercel.app_20260512_090724/nmap_full getvesto.vercel.app
+Nmap scan report for getvesto.vercel.app (216.198.79.67)
+Host is up (0.019s latency).
+Other addresses for getvesto.vercel.app (not scanned): 64.29.17.67
+Not shown: 65350 filtered tcp ports (no-response), 183 filtered tcp ports (host-unreach)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT    STATE SERVICE  VERSION
+80/tcp  open  http     Vercel
+443/tcp open  ssl/http Golang net/http server
+2 services unrecognized despite returning data. If you know the service/version, please submit the following fingerprints at https://nmap.org/cgi-bin/submit.cgi?new-service :
+==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
+SF-Port80-TCP:V=7.99%I=7%D=5/12%Time=6A02EF2E%P=x86_64-pc-linux-gnu%r(GetR
+SF:equest,8A,"HTTP/1\.0\x20308\x20Permanent\x20Redirect\r\nContent-Type:\x
+SF:20text/plain\r\nLocation:\x20https:///\r\nRefresh:\x200;url=https:///\r
+SF:\nserver:\x20Vercel\r\n\r\nRedirecting\.\.\.")%r(HTTPOptions,8A,"HTTP/1
+SF:\.0\x20308\x20Permanent\x20Redirect\r\nContent-Type:\x20text/plain\r\nL
+SF:ocation:\x20https:///\r\nRefresh:\x200;url=https:///\r\nserver:\x20Verc
+SF:el\r\n\r\nRedirecting\.\.\.")%r(FourOhFourRequest,D0,"HTTP/1\.0\x20308\
+SF:x20Permanent\x20Redirect\r\nContent-Type:\x20text/plain\r\nLocation:\x2
+SF:0https:///nice%20ports%2C/Tri%6Eity\.txt%2ebak\r\nRefresh:\x200;url=htt
+SF:ps:///nice%20ports%2C/Tri%6Eity\.txt%2ebak\r\nserver:\x20Vercel\r\n\r\n
+SF:Redirecting\.\.\.");
+==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
+SF-Port443-TCP:V=7.99%T=SSL%I=7%D=5/12%Time=6A02EF35%P=x86_64-pc-linux-gnu
+SF:%r(GetRequest,1000,"HTTP/1\.0\x20403\x20Forbidden\r\nCache-Control:\x20
+SF:private,\x20no-store,\x20max-age=0\r\nContent-Type:\x20text/html;\x20ch
+SF:arset=utf-8\r\nServer:\x20Vercel\r\nX-Vercel-Challenge-Token:\x202\.177
+SF:8577205\.60\.ZTA5Njk2MjllOTM2MDQ4MGVhM2FlNGZjNzk1OGIwNjc7ODQ2ZmEyODQ7YW
+SF:YyNmQzN2ZhOGUxNmZjM2M0YzYxNTdlZTEyZTFjYWY0NDRmYTQyNzszO6jSCMBH9K8pY/vSM
+SF:\+hA8Hd6Fmlrt/CO/70EFUd1kjRPnI/lKnQGgb8Q26\+Da4Ej\+vZ2kSoirMeDrXeY5z1ZM
+SF:WKyRdA=\.8d93963b3afee90d3795e97ba2b1cd0f\r\nX-Vercel-Id:\x20cdg1::1778
+SF:577205-AYvTNyhOGge4zBeQcTCLyQfmwwOawAmQ\r\nX-Vercel-Mitigated:\x20chall
+SF:enge\r\nDate:\x20Tue,\x2012\x20May\x202026\x2009:13:25\x20GMT\r\n\r\n<!
+SF:DOCTYPE\x20html><html\x20lang=\"en\"\x20data-astro-cid-nbv56vs3>\x20<he
+SF:ad><meta\x20charset=\"utf-8\"><meta\x20name=\"viewport\"\x20content=\"w
+SF:idth=device-width,\x20initial-scale=1\"><meta\x20name=\"theme-color\"\x
+SF:20content=\"#000\"><title>Vercel\x20Security\x20Checkpoint</title><styl
+SF:e>\.spinner\[data-astro-cid-jlpqxutv\]{display:flex;flex-direction:colu
+SF:mn;justify-content:center;align-items:center}\.spinner-")%r(FourOhFourR
+SF:equest,6957,"HTTP/1\.0\x20403\x20Forbidden\r\nCache-Control:\x20private
+SF:,\x20no-store,\x20max-age=0\r\nContent-Type:\x20text/html;\x20charset=u
+SF:tf-8\r\nServer:\x20Vercel\r\nX-Vercel-Challenge-Token:\x202\.1778577205
+SF:\.60\.ZTA5Njk2MjllOTM2MDQ4MGVhM2FlNGZjNzk1OGIwNjc7YmRkMTYzNmE7NTJkM2M5N
+SF:TNmN2RlOWRiNDJhMzY2NTIxN2VkYmM3OGRmODBlMjA1ZTszO3AJhbbyCv/E79gCTzBAp/Hy
+SF:cWMh7J\+KHv1lZOZ4jPdyx7R1MjiLqJTSeYJUe1tAelvup2uStzkq0aILibOUOHoi\+90=\
+SF:.d7ec906b73a38f1780480280ed6c0fd3\r\nX-Vercel-Id:\x20cdg1::1778577205-j
+SF:eQ8BgVviraZKseOIdgoscWBw8rgYO8c\r\nX-Vercel-Mitigated:\x20challenge\r\n
+SF:Date:\x20Tue,\x2012\x20May\x202026\x2009:13:25\x20GMT\r\n\r\n<!DOCTYPE\
+SF:x20html><html\x20lang=\"en\"\x20data-astro-cid-nbv56vs3>\x20<head><meta
+SF:\x20charset=\"utf-8\"><meta\x20name=\"viewport\"\x20content=\"width=dev
+SF:ice-width,\x20initial-scale=1\"><meta\x20name=\"theme-color\"\x20conten
+SF:t=\"#000\"><title>Vercel\x20Security\x20Checkpoint</title><style>\.spin
+SF:ner\[data-astro-cid-jlpqxutv\]{display:flex;flex-direction:column;justi
+SF:fy-content:center;align-items:center}\.spinner-");
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Tue May 12 09:14:40 2026 -- 1 IP address (1 host up) scanned in 268.28 seconds

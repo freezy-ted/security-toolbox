@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.99 scan initiated Mon Apr 27 13:15:09 2026 as: /usr/lib/nmap/nmap -sV -p- -&#45;open -T4 -oA /output/recon/http://www.testingmcafeesites.com/index.html_20260427_131423/nmap_full http://www.testingmcafeesites.com/index.html -->
+<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -sV -p- -&#45;open -T4 -oA /output/recon/http://www.testingmcafeesites.com/index.html_20260427_131423/nmap_full http://www.testingmcafeesites.com/index.html" start="1777295709" startstr="Mon Apr 27 13:15:09 2026" version="7.99" xmloutputversion="1.05">
+<scaninfo type="syn" protocol="tcp" numservices="65535" services="1-65535"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<target specification="http://www.testingmcafeesites.com/index.html" status="skipped" reason="invalid"/>
+<runstats><finished time="1777295709" timestr="Mon Apr 27 13:15:09 2026" summary="Nmap done at Mon Apr 27 13:15:09 2026; 0 IP addresses (0 hosts up) scanned in 0.13 seconds" elapsed="0.13" exit="success"/><hosts up="0" down="0" total="0"/>
+</runstats>
+</nmaprun>

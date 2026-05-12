@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"/>
+<title>Rapport Vulnérabilités — https://getvesto.vercel.app</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:-apple-system,sans-serif; background:#f5f5f5; color:#1a1a1a; line-height:1.6; }
+header { background:#533ab7; color:white; padding:2rem; }
+header h1 { font-size:1.5rem; font-weight:500; margin-bottom:4px; }
+header p { opacity:.85; font-size:.9rem; }
+.risk-badge { display:inline-block; margin-top:10px; font-size:13px; padding:5px 16px;
+               border-radius:99px; background:white; font-weight:500; color:#3b6d11; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+          gap:10px; padding:1.5rem 2rem; background:white; border-bottom:1px solid #e0e0e0; }
+.stat { background:#f9f9f9; border-radius:8px; padding:.9rem; text-align:center; }
+.stat-value { font-size:1.8rem; font-weight:500; }
+.stat-label { font-size:.75rem; color:#666; margin-top:2px; }
+.stat.critical .stat-value { color:#a32d2d; }
+.stat.high     .stat-value { color:#854f0b; }
+.stat.medium   .stat-value { color:#533ab7; }
+.stat.low      .stat-value { color:#185fa5; }
+.stat.info     .stat-value { color:#3b6d11; }
+.stat.total    .stat-value { color:#1a1a1a; }
+.content { max-width:1200px; margin:2rem auto; padding:0 1.5rem; }
+.section { background:white; border-radius:10px; border:1px solid #e0e0e0;
+            padding:1.5rem; margin-bottom:1rem; overflow:hidden; }
+.section h2 { font-size:.95rem; font-weight:500; margin-bottom:1rem;
+               padding-bottom:8px; border-bottom:1px solid #eee; }
+pre { background:#1a1a1a; color:#d4d4d4; padding:1rem; border-radius:6px;
+       font-size:.75rem; line-height:1.6; overflow-x:auto;
+       max-height:350px; overflow-y:auto; white-space:pre-wrap; }
+table { width:100%; border-collapse:collapse; font-size:.85rem; }
+th,td { padding:9px 12px; text-align:left; border-bottom:1px solid #eee; }
+th { background:#f5f0ff; font-weight:500; }
+.empty { color:#999; font-style:italic; font-size:.88rem; }
+footer { text-align:center; padding:2rem; color:#999; font-size:.78rem;
+          border-top:1px solid #e0e0e0; margin-top:2rem; }
+</style></head><body>
+<header>
+  <h1>Rapport Scan de Vulnérabilités</h1>
+  <p>Cible : <strong>https://getvesto.vercel.app</strong> &nbsp;·&nbsp; 07/05/2026 à 14:43</p>
+  <span class="risk-badge">Risque global : Faible</span>
+</header>
+
+<div class="stats">
+  <div class="stat total"><div class="stat-value">0</div><div class="stat-label">Total</div></div>
+  <div class="stat critical"><div class="stat-value">0</div><div class="stat-label">Critique</div></div>
+  <div class="stat high"><div class="stat-value">0</div><div class="stat-label">Élevé</div></div>
+  <div class="stat medium"><div class="stat-value">0</div><div class="stat-label">Moyen</div></div>
+  <div class="stat low"><div class="stat-value">0</div><div class="stat-label">Faible</div></div>
+  <div class="stat info"><div class="stat-value">0</div><div class="stat-label">Info</div></div>
+</div>
+
+<div class="content">
+  <div class="section">
+    <h2>⚠️ Résultats Nuclei — Toutes catégories</h2>
+    <p class='empty'>Aucune vulnérabilité trouvée.</p>
+  </div>
+  <div class='section'><h2>🔍 Nmap — Scripts de vulnérabilités</h2><pre># Nmap 7.99 scan initiated Thu May  7 14:42:31 2026 as: /usr/lib/nmap/nmap -sV --script vuln -oN /output/vuln/https://getvesto.vercel.app_20260507_144205/nmap_vuln.txt https://getvesto.vercel.app
+Unable to split netmask from target expression: "https://getvesto.vercel.app"
+WARNING: No targets were specified, so 0 hosts scanned.
+# Nmap done at Thu May  7 14:42:41 2026 -- 0 IP addresses (0 hosts up) scanned in 10.39 seconds</pre></div>
+  <div class='section'><h2>🔒 Nmap — Scripts safe</h2><pre># Nmap 7.99 scan initiated Thu May  7 14:42:41 2026 as: /usr/lib/nmap/nmap -sV --script safe -oN /output/vuln/https://getvesto.vercel.app_20260507_144205/nmap_safe.txt https://getvesto.vercel.app
+Pre-scan script results:
+| targets-sniffer: Sniffed 11 address(es). 
+| 224.0.0.9
+| 239.255.255.250
+| 239.255.255.253
+| 224.0.0.251
+| 0.0.0.0
+| 224.0.0.1
+| 224.0.0.13
+| 172.17.0.1
+| 224.0.0.106
+| 224.0.23.12
+|_192.168.80.2
+Bug in broadcast-upnp-info: no string output.
+|_hostmap-robtex: *TEMPORARILY DISABLED* due to changes in Robtex's API. See https://www.robtex.com/api/
+| targets-asn: 
+|_  targets-asn.asn is a mandatory parameter
+|_http-robtex-shared-ns: *TEMPORARILY DISABLED* due to changes in Robtex's API. See https://www.robtex.com/api/
+| broadcast-igmp-discovery: 
+|   172.17.0.1
+|     Interface: eth0
+|     Version: 2
+|     Group: 224.0.0.106
+|     Description: All-Snoopers (rfc4286)
+|_  Use the newtargets script-arg to add the results as targets
+| eap-info: 
+| Available authentication methods with identity="anonymous" on interface eth0
+|   unknown  EAP-TTLS
+|   unknown  EAP-TLS
+|   unknown  EAP-MSCHAP-V2
+|_  unknown  PEAP
+Unable to split netmask from target expression: "https://getvesto.vercel.app"
+WARNING: No targets were specified, so 0 hosts scanned.
+# Nmap done at Thu May  7 14:43:22 2026 -- 0 IP addresses (0 hosts up) scanned in 40.88 seconds</pre></div>
+</div>
+<footer>Security Toolbox — usage autorisé uniquement</footer>
+</body></html>

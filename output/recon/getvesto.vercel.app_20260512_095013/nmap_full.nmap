@@ -1,0 +1,1 @@
+# Nmap 7.99 scan initiated Tue May 12 09:53:05 2026 as: /usr/lib/nmap/nmap -sV -p- --open -T4 -oA /output/recon/getvesto.vercel.app_20260512_095013/nmap_full getvesto.vercel.app

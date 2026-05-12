@@ -1,0 +1,4 @@
+# Nmap 7.99 scan initiated Tue May 12 09:50:44 2026 as: /usr/lib/nmap/nmap -sV -sC --open -T4 -oA /output/recon/getvesto.vercel.app_20260512_095013/nmap_fast getvesto.vercel.app
+Host: 216.198.79.67 ()	Status: Up
+Host: 216.198.79.67 ()	Ports: 80/open/tcp//http//Vercel/, 443/open/tcp//ssl|http//Golang net|http server/	Ignored State: filtered (998)
+# Nmap done at Tue May 12 09:53:05 2026 -- 1 IP address (1 host up) scanned in 140.97 seconds

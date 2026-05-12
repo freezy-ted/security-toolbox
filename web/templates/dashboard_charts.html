@@ -347,38 +347,71 @@ function initCharts(){
   });
 }
 
-function updateCharts(){
-  const mods=['recon','web','network','ad','vuln'];
-  chartActivity.data.datasets[0].data = mods.map(m=>modState[m]==='done'?1:0);
-  chartActivity.data.datasets[1].data = mods.map(m=>modState[m]==='running'?1:0);
-  chartActivity.data.datasets[2].data = mods.map(m=>modState[m]==='error'?1:0);
-  chartActivity.update();
+async function updateCharts(){
+  try {
+    const r = await fetch('/api/stats');
+    const stats = await r.json();
 
-  chartSeverity.data.datasets[0].data=[state.vulns.critical,state.vulns.high,state.vulns.medium,state.vulns.low];
-  chartSeverity.update();
+    // ── Graphique activité ──
+    const mods = ['recon','web','network','ad','vuln','osint'];
+    chartActivity.data.datasets[0].data = mods.map(m => stats.modules[m] === 1 ? 1 : 0);
+    chartActivity.data.datasets[1].data = mods.map(m => modState[m] === 'running' ? 1 : 0);
+    chartActivity.data.datasets[2].data = mods.map(m => modState[m] === 'error' ? 1 : 0);
+    chartActivity.update();
 
-  // Simule ports découverts
-  if(modState['recon']==='done'){
-    chartPorts.data.datasets[0].data=[1,1,1,1,0,0,1,2];
+    // ── Graphique sévérité ──
+    chartSeverity.data.datasets[0].data = [
+      stats.vulns.critical,
+      stats.vulns.high,
+      stats.vulns.medium,
+      stats.vulns.low
+    ];
+    chartSeverity.update();
+
+    // ── Graphique ports ──
+    const portLabels = ['21','22','80','443','445','3389','8080','Autres'];
+    const knownPorts = ['21','22','80','443','445','3389','8080'];
+    let others = 0;
+    const portData = knownPorts.map(p => stats.ports[p] || 0);
+    Object.keys(stats.ports).forEach(p => {
+      if(!knownPorts.includes(p)) others++;
+    });
+    portData.push(others);
+    chartPorts.data.datasets[0].data = portData;
     chartPorts.update();
-    state.ports=7;
-    document.getElementById('s-ports').textContent=state.ports;
-  }
 
-  // Progression temporelle
-  const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-  if(chartProgress.data.labels.length===0||chartProgress.data.labels[chartProgress.data.labels.length-1]!==now){
-    chartProgress.data.labels.push(now);
-    chartProgress.data.datasets[0].data.push(state.done);
-    if(chartProgress.data.labels.length>8){chartProgress.data.labels.shift();chartProgress.data.datasets[0].data.shift();}
-    chartProgress.update();
-  }
+    // ── Graphique progression ──
+    const now = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    if(chartProgress.data.labels.length === 0 || chartProgress.data.labels[chartProgress.data.labels.length-1] !== now){
+      chartProgress.data.labels.push(now);
+      chartProgress.data.datasets[0].data.push(state.done);
+      if(chartProgress.data.labels.length > 8){
+        chartProgress.data.labels.shift();
+        chartProgress.data.datasets[0].data.shift();
+      }
+      chartProgress.update();
+    }
 
-  // Radar risque
-  const riskMap={'recon':modState['recon']==='done'?4:0,'web':modState['web']==='done'?7:0,
-    'network':modState['network']==='done'?3:0,'ad':modState['ad']==='done'?6:0,'vuln':modState['vuln']==='done'?8:0};
-  chartRisk.data.datasets[0].data=Object.values(riskMap);
-  chartRisk.update();
+    // ── Radar risque ──
+    const totalVulns = stats.vulns.critical + stats.vulns.high + stats.vulns.medium + stats.vulns.low;
+    const totalPorts = Object.keys(stats.ports).length;
+    chartRisk.data.datasets[0].data = [
+      stats.modules['recon'] ? Math.min(totalPorts, 10) : 0,
+      stats.modules['web']   ? Math.min(totalVulns, 10) : 0,
+      stats.modules['network'] ? 3 : 0,
+      stats.modules['ad']    ? 6 : 0,
+      stats.modules['vuln']  ? Math.min(stats.vulns.critical * 2 + stats.vulns.high, 10) : 0
+    ];
+    chartRisk.update();
+
+    // ── Stats vulnérabilités ──
+    const tv = totalVulns;
+    document.getElementById('s-vulns').textContent = tv;
+    state.vulns = stats.vulns;
+
+  } catch(e) {
+    console.log('updateCharts erreur:', e.message);
+  }
 }
 
 // ── Navigation ──
@@ -522,11 +555,11 @@ async function launchModule(mod){
 }
 
 async function refreshReports(){
-  await new Promise(r=>setTimeout(r,100));
+  await new Promise(res=>setTimeout(res,100));
   const list = document.getElementById('reports-list');
   if(!list){ console.log('reports-list introuvable'); return; }
   list.innerHTML = '<span style="font-size:13px;color:#6b7280">Chargement...</span>';
-try {
+  try {
     const r = await fetch('/api/reports');
     const reports = await r.json();
     if(!reports.length){
@@ -534,21 +567,24 @@ try {
       return;
     }
     const mc={recon:'#5DCAA5',web:'#85B7EB',network:'#EF9F27',ad:'#AFA9EC',vuln:'#E24B4A',osint:'#5DCAA5'};
-    const html = reports.map(r => {
-      const mod = Object.keys(mc).find(m => r.path.includes('/'+m+'/')) || 'other';
-      const displayName = r.path.replace('/output/','').replace('/report.html','');
-      return `<div class="report-item"><div style="flex:1"><span style="font-size:11px;padding:2px 8px;border-radius:99px;background:#1f2937;color:${mc[mod]||'#9ca3af'};margin-right:6px">${mod}</span><span style="font-size:13px;color:#e0e0e0">${displayName}</span><div class="report-meta">${r.date} — ${Math.round(r.size/1024)} Ko</div></div><div style="display:flex;gap:6px"><button class="btn-sm" onclick="openReport('${r.path}')">Ouvrir</button></div></div>`;
+    const html = reports.map(rep => {
+      const mod = Object.keys(mc).find(m => rep.path.includes('/'+m+'/')) || 'other';
+      const relativePath = rep.path.replace('/output/','');
+      const displayName = relativePath.replace('/report.html','');
+      return '<div class="report-item"><div style="flex:1">'
+        + '<span style="font-size:11px;padding:2px 8px;border-radius:99px;background:#1f2937;color:'+(mc[mod]||'#9ca3af')+';margin-right:6px">'+mod+'</span>'
+        + '<a href="/reports/'+relativePath+'" target="_blank" style="font-size:13px;color:#85B7EB">'+displayName+'</a>'
+        + '<div class="report-meta">'+rep.date+' - '+parseFloat(rep.size/1024).toFixed(1)+' Ko</div>'
+        + '</div></div>';
     }).join('');
     list.innerHTML = html;
-    document.getElementById('s-reports').textContent = reports.length;
+    const sr = document.getElementById('s-reports'); if(sr) sr.textContent = reports.length;
   } catch(e) {
     console.log('ERREUR refreshReports:', e.message);
-    list.innerHTML='<span style="color:#E24B4A;font-size:13px">Erreur de chargement</span>';
+if(list) list.innerHTML='<span style="color:#E24B4A;font-size:13px">Erreur de chargement</span>';
   }
 }
-
 async function loadReports(){ refreshReports(); }
-
 function openReport(path){
   const relative = path.replace('/output/','');
   window.open('/reports/' + relative, '_blank');
