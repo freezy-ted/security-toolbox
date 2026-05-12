@@ -1,0 +1,47 @@
+# Nmap 7.99 scan initiated Tue May 12 09:33:12 2026 as: /usr/lib/nmap/nmap -sV --script vuln -oN /output/vuln/getvesto.vercel.app_20260512_093257/nmap_vuln.txt getvesto.vercel.app
+Nmap scan report for getvesto.vercel.app (64.29.17.195)
+Host is up (0.63s latency).
+Other addresses for getvesto.vercel.app (not scanned): 216.198.79.195
+Not shown: 813 filtered tcp ports (no-response), 185 filtered tcp ports (host-unreach)
+PORT    STATE SERVICE   VERSION
+80/tcp  open  http      Vercel
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+|_http-server-header: Vercel
+| fingerprint-strings: 
+|   FourOhFourRequest: 
+|     HTTP/1.0 308 Permanent Redirect
+|     Content-Type: text/plain
+|     Location: https:///nice%20ports%2C/Tri%6Eity.txt%2ebak
+|     Refresh: 0;url=https:///nice%20ports%2C/Tri%6Eity.txt%2ebak
+|     server: Vercel
+|     Redirecting...
+|   GetRequest, HTTPOptions: 
+|     HTTP/1.0 308 Permanent Redirect
+|     Content-Type: text/plain
+|     Location: https:///
+|     Refresh: 0;url=https:///
+|     server: Vercel
+|_    Redirecting...
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+443/tcp open  ssl/https Vercel
+|_http-aspnet-debug: ERROR: Script execution failed (use -d to debug)
+|_http-server-header: Vercel
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port80-TCP:V=7.99%I=7%D=5/12%Time=6A02F433%P=x86_64-pc-linux-gnu%r(GetR
+SF:equest,8A,"HTTP/1\.0\x20308\x20Permanent\x20Redirect\r\nContent-Type:\x
+SF:20text/plain\r\nLocation:\x20https:///\r\nRefresh:\x200;url=https:///\r
+SF:\nserver:\x20Vercel\r\n\r\nRedirecting\.\.\.")%r(HTTPOptions,8A,"HTTP/1
+SF:\.0\x20308\x20Permanent\x20Redirect\r\nContent-Type:\x20text/plain\r\nL
+SF:ocation:\x20https:///\r\nRefresh:\x200;url=https:///\r\nserver:\x20Verc
+SF:el\r\n\r\nRedirecting\.\.\.")%r(FourOhFourRequest,D0,"HTTP/1\.0\x20308\
+SF:x20Permanent\x20Redirect\r\nContent-Type:\x20text/plain\r\nLocation:\x2
+SF:0https:///nice%20ports%2C/Tri%6Eity\.txt%2ebak\r\nRefresh:\x200;url=htt
+SF:ps:///nice%20ports%2C/Tri%6Eity\.txt%2ebak\r\nserver:\x20Vercel\r\n\r\n
+SF:Redirecting\.\.\.");
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Tue May 12 09:37:13 2026 -- 1 IP address (1 host up) scanned in 241.09 seconds

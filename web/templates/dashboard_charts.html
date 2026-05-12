@@ -347,38 +347,71 @@ function initCharts(){
   });
 }
 
-function updateCharts(){
-  const mods=['recon','web','network','ad','vuln'];
-  chartActivity.data.datasets[0].data = mods.map(m=>modState[m]==='done'?1:0);
-  chartActivity.data.datasets[1].data = mods.map(m=>modState[m]==='running'?1:0);
-  chartActivity.data.datasets[2].data = mods.map(m=>modState[m]==='error'?1:0);
-  chartActivity.update();
+async function updateCharts(){
+  try {
+    const r = await fetch('/api/stats');
+    const stats = await r.json();
 
-  chartSeverity.data.datasets[0].data=[state.vulns.critical,state.vulns.high,state.vulns.medium,state.vulns.low];
-  chartSeverity.update();
+    // ── Graphique activité ──
+    const mods = ['recon','web','network','ad','vuln','osint'];
+    chartActivity.data.datasets[0].data = mods.map(m => stats.modules[m] === 1 ? 1 : 0);
+    chartActivity.data.datasets[1].data = mods.map(m => modState[m] === 'running' ? 1 : 0);
+    chartActivity.data.datasets[2].data = mods.map(m => modState[m] === 'error' ? 1 : 0);
+    chartActivity.update();
 
-  // Simule ports découverts
-  if(modState['recon']==='done'){
-    chartPorts.data.datasets[0].data=[1,1,1,1,0,0,1,2];
+    // ── Graphique sévérité ──
+    chartSeverity.data.datasets[0].data = [
+      stats.vulns.critical,
+      stats.vulns.high,
+      stats.vulns.medium,
+      stats.vulns.low
+    ];
+    chartSeverity.update();
+
+    // ── Graphique ports ──
+    const portLabels = ['21','22','80','443','445','3389','8080','Autres'];
+    const knownPorts = ['21','22','80','443','445','3389','8080'];
+    let others = 0;
+    const portData = knownPorts.map(p => stats.ports[p] || 0);
+    Object.keys(stats.ports).forEach(p => {
+      if(!knownPorts.includes(p)) others++;
+    });
+    portData.push(others);
+    chartPorts.data.datasets[0].data = portData;
     chartPorts.update();
-    state.ports=7;
-    document.getElementById('s-ports').textContent=state.ports;
-  }
 
-  // Progression temporelle
-  const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-  if(chartProgress.data.labels.length===0||chartProgress.data.labels[chartProgress.data.labels.length-1]!==now){
-    chartProgress.data.labels.push(now);
-    chartProgress.data.datasets[0].data.push(state.done);
-    if(chartProgress.data.labels.length>8){chartProgress.data.labels.shift();chartProgress.data.datasets[0].data.shift();}
-    chartProgress.update();
-  }
+    // ── Graphique progression ──
+    const now = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    if(chartProgress.data.labels.length === 0 || chartProgress.data.labels[chartProgress.data.labels.length-1] !== now){
+      chartProgress.data.labels.push(now);
+      chartProgress.data.datasets[0].data.push(state.done);
+      if(chartProgress.data.labels.length > 8){
+        chartProgress.data.labels.shift();
+        chartProgress.data.datasets[0].data.shift();
+      }
+      chartProgress.update();
+    }
 
-  // Radar risque
-  const riskMap={'recon':modState['recon']==='done'?4:0,'web':modState['web']==='done'?7:0,
-    'network':modState['network']==='done'?3:0,'ad':modState['ad']==='done'?6:0,'vuln':modState['vuln']==='done'?8:0};
-  chartRisk.data.datasets[0].data=Object.values(riskMap);
-  chartRisk.update();
+    // ── Radar risque ──
+    const totalVulns = stats.vulns.critical + stats.vulns.high + stats.vulns.medium + stats.vulns.low;
+    const totalPorts = Object.keys(stats.ports).length;
+    chartRisk.data.datasets[0].data = [
+      stats.modules['recon'] ? Math.min(totalPorts, 10) : 0,
+      stats.modules['web']   ? Math.min(totalVulns, 10) : 0,
+      stats.modules['network'] ? 3 : 0,
+      stats.modules['ad']    ? 6 : 0,
+      stats.modules['vuln']  ? Math.min(stats.vulns.critical * 2 + stats.vulns.high, 10) : 0
+    ];
+    chartRisk.update();
+
+    // ── Stats vulnérabilités ──
+    const tv = totalVulns;
+    document.getElementById('s-vulns').textContent = tv;
+    state.vulns = stats.vulns;
+
+  } catch(e) {
+    console.log('updateCharts erreur:', e.message);
+  }
 }
 
 // ── Navigation ──

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rapport Recon — getvesto.vercel.app</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+         background: #f5f5f5; color: #1a1a1a; line-height: 1.6; }
+  header { background: #0f6e56; color: white; padding: 2rem; }
+  header h1 { font-size: 1.5rem; font-weight: 500; margin-bottom: 4px; }
+  header p  { opacity: 0.8; font-size: 0.9rem; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px; padding: 1.5rem 2rem; background: white;
+            border-bottom: 1px solid #e0e0e0; }
+  .stat { background: #f9f9f9; border-radius: 8px; padding: 1rem; text-align: center; }
+  .stat-value { font-size: 2rem; font-weight: 500; color: #0f6e56; }
+  .stat-label { font-size: 0.8rem; color: #666; margin-top: 2px; }
+  .content { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
+  .section { background: white; border-radius: 10px; border: 1px solid #e0e0e0;
+              padding: 1.5rem; margin-bottom: 1.5rem; overflow: hidden; }
+  .section h2 { font-size: 1rem; font-weight: 500; margin-bottom: 1rem;
+                 padding-bottom: 8px; border-bottom: 1px solid #eee; }
+  pre { background: #1a1a1a; color: #d4d4d4; padding: 1rem; border-radius: 6px;
+         font-size: 0.78rem; overflow-x: auto; line-height: 1.6;
+         max-height: 400px; overflow-y: auto; white-space: pre-wrap; }
+  .empty { color: #999; font-size: 0.9rem; font-style: italic; }
+  footer { text-align: center; padding: 2rem; color: #999; font-size: 0.8rem; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 99px;
+            font-size: 0.75rem; background: #e1f5ee; color: #0f6e56; margin-left: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Rapport de Reconnaissance</h1>
+  <p>Cible : <strong>getvesto.vercel.app</strong> &nbsp;|&nbsp; Généré le 12/05/2026 à 09:14</p>
+  <p style="margin-top:8px;font-size:0.8rem;opacity:0.6;">
+    Usage autorisé uniquement — Security Toolbox
+  </p>
+</header>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-value">0</div>
+    <div class="stat-label">Ports ouverts</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">0</div>
+    <div class="stat-label">Sous-domaines</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">12/05/2026</div>
+    <div class="stat-label">Date du scan</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">getvesto.vercel.app</div>
+    <div class="stat-label">Cible</div>
+  </div>
+</div>
+
+<div class="content">
+  
+        <div class="section">
+            <h2>🔎 Whois</h2>
+            <p class="empty">Aucun résultat trouvé ou outil non disponible.</p>
+        </div>
+  
+        <div class="section">
+            <h2>🌐 Sous-domaines (subfinder)</h2>
+            <p class="empty">Aucun résultat trouvé ou outil non disponible.</p>
+        </div>
+  
+        <div class="section">
+            <h2>📡 DNS — Enregistrements standard</h2>
+            <p class="empty">Aucun résultat trouvé ou outil non disponible.</p>
+        </div>
+  
+        <div class="section">
+            <h2>⚠️ DNS — Tentative de transfert de zone</h2>
+            <p class="empty">Aucun résultat trouvé ou outil non disponible.</p>
+        </div>
+  
+    <div class="section">
+        <h2>🔍 Nmap — Scan rapide</h2>
+        <pre># Nmap 7.99 scan initiated Tue May 12 09:07:46 2026 as: /usr/lib/nmap/nmap -sV -sC --open -T4 -oA /output/recon/getvesto.vercel.app_20260512_090724/nmap_fast getvesto.vercel.app
+Nmap scan report for getvesto.vercel.app (64.29.17.67)
+Host is up (0.20s latency).
+Other addresses for getvesto.vercel.app (not scanned): 216.198.79.67
+Not shown: 845 filtered tcp ports (no-response), 153 filtered tcp ports (host-unreach)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT    STATE SERVICE  VERSION
+80/tcp  open  http     Vercel
+|_http-title: Site doesn't have a title (text/plain).
+| fingerprint-strings: 
+|   FourOhFourRequest: 
+|     HTTP/1.0 308 Permanent Redirect
+|     Content-Type: text/plain
+|     Location: https:///nice%20ports%2C/Tri%6Eity.txt%2ebak
+|     Refresh: 0;url=https:///nice%20ports%2C/Tri%6Eity.txt%2ebak
+|     server: Vercel
+|     Redirecting...
+|   GetRequest, HTTPOptions: 
+|     HTTP/1.0 308 Permanent Redirect
+|     Content-Type: text/plain
+|     Location: https:///
+|     Refresh: 0;url=https:///
+|     server: Vercel
+|_    Redirecting...
+|_http-server-header: Vercel
+443/tcp open  ssl/http Golang net/http server
+|_http-server-header: Vercel
+| ssl-cert: Subject: commonName=*.vercel.app
+| Subject Alternative Name: DNS:*.vercel.app, DNS:vercel.app
+| Not valid before: 2026-04-28T02:04:43
+|_Not valid after:  2026-07-27T02:04:42
+|_ssl-date: TLS randomness does not represent time
+|_http-title: Site doesn't have a title (text/plain).
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port80-TCP:V=7.99%I=7%D=5/12%Time=6A02EE1B%P=x86_64-pc-linux-gnu%r(GetR
+SF:equest,8A,"HTTP/1\.0\x20308\x20Permanent\x20Redirect\r\nContent-Type:\x
+SF:20text/plain\r\nLocation:\x20https:///\r\nRefresh:\x200;url=https:///\r
+SF:\nserver:\x20Vercel\r\n\r\nRedirecting\.\.\.")%r(HTTPOptions,8A,"HTTP/1
+SF:\.0\x20308\x20Permanent\x20Redirect\r\nContent-Type:\x20text/plain\r\nL
+SF:ocation:\x20https:///\r\nRefresh:\x200;url=https:///\r\nserver:\x20Verc
+SF:el\r\n\r\nRedirecting\.\.\.")%r(FourOhFourRequest,D0,"HTTP/1\.0\x20308\
+SF:x20Permanent\x20Redirect\r\nContent-Type:\x20text/plain\r\nLocation:\x2
+SF:0https:///nice%20ports%2C/Tri%6Eity\.txt%2ebak\r\nRefresh:\x200;url=htt
+SF:ps:///nice%20ports%2C/Tri%6Eity\.txt%2ebak\r\nserver:\x20Vercel\r\n\r\n
+SF:Redirecting\.\.\.");
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Tue May 12 09:10:11 2026 -- 1 IP address (1 host up) scanned in 144.98 seconds</pre>
+    </div>
+  
+    <div class="section">
+        <h2>🔍 Nmap — Scan complet</h2>
+        <pre># Nmap 7.99 scan initiated Tue May 12 09:10:11 2026 as: /usr/lib/nmap/nmap -sV -p- --open -T4 -oA /output/recon/getvesto.vercel.app_20260512_090724/nmap_full getvesto.vercel.app
+Nmap scan report for getvesto.vercel.app (216.198.79.67)
+Host is up (0.019s latency).
+Other addresses for getvesto.vercel.app (not scanned): 64.29.17.67
+Not shown: 65350 filtered tcp ports (no-response), 183 filtered tcp ports (host-unreach)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT    STATE SERVICE  VERSION
+80/tcp  open  http     Vercel
+443/tcp open  ssl/http Golang net/http server
+2 services unrecognized despite returning data. If you know the service/version, please submit the following fingerprints at https://nmap.org/cgi-bin/submit.cgi?new-service :
+==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
+SF-Port80-TCP:V=7.99%I=7%D=5/12%Time=6A02EF2E%P=x86_64-pc-linux-gnu%r(GetR
+SF:equest,8A,"HTTP/1\.0\x20308\x20Permanent\x20Redirect\r\nContent-Type:\x
+SF:20text/plain\r\nLocation:\x20https:///\r\nRefresh:\x200;url=https:///\r
+SF:\nserver:\x20Vercel\r\n\r\nRedirecting\.\.\.")%r(HTTPOptions,8A,"HTTP/1
+SF:\.0\x20308\x20Permanent\x20Redirect\r\nContent-Type:\x20text/plain\r\nL
+SF:ocation:\x20https:///\r\nRefresh:\x200;url=https:///\r\nserver:\x20Verc
+SF:el\r\n\r\nRedirecting\.\.\.")%r(FourOhFourRequest,D0,"HTTP/1\.0\x20308\
+SF:x20Permanent\x20Redirect\r\nContent-Type:\x20text/plain\r\nLocation:\x2
+SF:0https:///nice%20ports%2C/Tri%6Eity\.txt%2ebak\r\nRefresh:\x200;url=htt
+SF:ps:///nice%20ports%2C/Tri%6Eity\.txt%2ebak\r\nserver:\x20Vercel\r\n\r\n
+SF:Redirecting\.\.\.");
+==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
+SF-Port443-TCP:V=7.99%T=SSL%I=7%D=5/12%Time=6A02EF35%P=x86_64-pc-linux-gnu
+SF:%r(GetRequest,1000,"HTTP/1\.0\x20403\x20Forbidden\r\nCache-Control:\x20
+SF:private,\x20no-store,\x20max-age=0\r\nContent-Type:\x20text/html;\x20ch
+SF:arset=utf-8\r\nServer:\x20Vercel\r\nX-Vercel-Challenge-Token:\x202\.177
+SF:8577205\.60\.ZTA5Njk2MjllOTM2MDQ4MGVhM2FlNGZjNzk1OGIwNjc7ODQ2ZmEyODQ7YW
+SF:YyNmQzN2ZhOGUxNmZjM2M0YzYxNTdlZTEyZTFjYWY0NDRmYTQyNzszO6jSCMBH9K8pY/vSM
+SF:\+hA8Hd6Fmlrt/CO/70EFUd1kjRPnI/lKnQGgb8Q26\+Da4Ej\+vZ2kSoirMeDrXeY5z1ZM
+SF:WKyRdA=\.8d93963b3afee90d3795e97ba2b1cd0f\r\nX-Vercel-Id:\x20cdg1::1778
+SF:577205-AYvTNyhOGge4zBeQcTCLyQfmwwOawAmQ\r\nX-Vercel-Mitigated:\x20chall
+SF:enge\r\nDate:\x20Tue,\x2012\x20May\x202026\x2009:13:25\x20GMT\r\n\r\n&lt;!
+SF:DOCTYPE\x20html&gt;&lt;html\x20lang=\"en\"\x20data-astro-cid-nbv56vs3&gt;\x20&lt;he
+SF:ad&gt;&lt;meta\x20charset=\"utf-8\"&gt;&lt;meta\x20name=\"viewport\"\x20content=\"w
+SF:idth=device-width,\x20initial-scale=1\"&gt;&lt;meta\x20name=\"theme-color\"\x
+SF:20content=\"#000\"&gt;&lt;title&gt;Vercel\x20Security\x20Checkpoint&lt;/title&gt;&lt;styl
+SF:e&gt;\.spinner\[data-astro-cid-jlpqxutv\]{display:flex;flex-direction:colu
+SF:mn;justify-content:center;align-items:center}\.spinner-")%r(FourOhFourR
+SF:equest,6957,"HTTP/1\.0\x20403\x20Forbidden\r\nCache-Control:\x20private
+SF:,\x20no-store,\x20max-age=0\r\nContent-Type:\x20text/html;\x20charset=u
+SF:tf-8\r\nServer:\x20Vercel\r\nX-Vercel-Challenge-Token:\x202\.1778577205
+SF:\.60\.ZTA5Njk2MjllOTM2MDQ4MGVhM2FlNGZjNzk1OGIwNjc7YmRkMTYzNmE7NTJkM2M5N
+SF:TNmN2RlOWRiNDJhMzY2NTIxN2VkYmM3OGRmODBlMjA1ZTszO3AJhbbyCv/E79gCTzBAp/Hy
+SF:cWMh7J\+KHv1lZOZ4jPdyx7R1MjiLqJTSeYJUe1tAelvup2uStzkq0aILibOUOHoi\+90=\
+SF:.d7ec906b73a38f1780480280ed6c0fd3\r\nX-Vercel-Id:\x20cdg1::1778577205-j
+SF:eQ8BgVviraZKseOIdgoscWBw8rgYO8c\r\nX-Vercel-Mitigated:\x20challenge\r\n
+SF:Date:\x20Tue,\x2012\x20May\x202026\x2009:13:25\x20GMT\r\n\r\n&lt;!DOCTYPE\
+SF:x20html&gt;&lt;html\x20lang=\"en\"\x20data-astro-cid-nbv56vs3&gt;\x20&lt;head&gt;&lt;meta
+SF:\x20charset=\"utf-8\"&gt;&lt;meta\x20name=\"viewport\"\x20content=\"width=dev
+SF:ice-width,\x20initial-scale=1\"&gt;&lt;meta\x20name=\"theme-color\"\x20conten
+SF:t=\"#000\"&gt;&lt;title&gt;Vercel\x20Security\x20Checkpoint&lt;/title&gt;&lt;style&gt;\.spin
+SF:ner\[data-astro-cid-jlpqxutv\]{display:flex;flex-direction:column;justi
+SF:fy-content:center;align-items:center}\.spinner-");
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Tue May 12 09:14:40 2026 -- 1 IP address (1 host up) scanned in 268.28 seconds</pre>
+    </div>
+  
+        <div class="section">
+            <h2>🛰️ Shodan</h2>
+            <p class="empty">Aucun résultat trouvé ou outil non disponible.</p>
+        </div>
+</div>
+
+<footer>Security Toolbox — rapport généré automatiquement — usage autorisé uniquement</footer>
+</body>
+</html>
